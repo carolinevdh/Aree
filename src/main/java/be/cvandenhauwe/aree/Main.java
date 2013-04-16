@@ -5,6 +5,8 @@
 package be.cvandenhauwe.aree;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -12,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -31,9 +34,9 @@ public class Main {
             conn.setRequestMethod("PUT");
             conn.setRequestProperty("Content-Type", "application/xml");
             
-            String input = "<descriptor><output>3D</output></descriptor>";
+            String input = "<descriptor><input>be.cvandenhauwe.aree.input.MarkerInput</input></descriptor>";
             
-            OutputStream os = conn.getOutputStream();
+            OutputStream os = conn.getOutputStream();            
             os.write(input.getBytes());
             os.flush();
             

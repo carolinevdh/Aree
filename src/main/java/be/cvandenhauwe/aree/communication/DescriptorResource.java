@@ -62,7 +62,8 @@ public class DescriptorResource {
         System.out.println(content);
         System.out.println("--------------end---------------");
        
-        ar.doSomething();
+        ar.configByDesc(content);
+        ar.process();
         
         return Response.status(201).entity("Your descriptor was succesfully received.").build();
     }

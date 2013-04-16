@@ -5,7 +5,7 @@
 		<input>
 			<class>be.cvandenhauwe.Aree.input.MarkerInput</class>
 			<version>desc</version>
-			</arguments>
+			<arguments/>
 		</input>	
 		<reasoner>
 			<class>be.cvandenhauwe.Aree.reasoner.PlainReasoner</class>
@@ -13,11 +13,11 @@
 			<arguments>
 				<database host="localhost" login="login" pass="pass" />
 			</arguments>
-		<reasoner>
+		</reasoner>
 		<output>
 			<class>be.cvandenhauwe.Aree.output.ThreeDOutput</class>
 			<version>desc</version>
-			</arguments>
+			<arguments/>
 		</output>
 	</configuration>
 </descriptor>

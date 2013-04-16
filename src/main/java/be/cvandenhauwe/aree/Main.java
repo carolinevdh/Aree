@@ -34,10 +34,13 @@ public class Main {
             conn.setRequestMethod("PUT");
             conn.setRequestProperty("Content-Type", "application/xml");
             
-            String input = "<descriptor><input>be.cvandenhauwe.aree.input.MarkerInput</input></descriptor>";
-            
+            String descriptorPath = "/Users/caroline/Thesis/Code/Aree/descriptors/";
+            String descriptor = "marker-plain-threed.xml"; //EDIT THIS
+            FileInputStream input = new FileInputStream(descriptorPath + descriptor);
+            //String input = "<descriptor><input>be.cvandenhauwe.aree.input.MarkerInput</input></descriptor>";
+
             OutputStream os = conn.getOutputStream();            
-            os.write(input.getBytes());
+            os.write(IOUtils.toByteArray(input));
             os.flush();
             
             if(conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {

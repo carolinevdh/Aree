@@ -4,11 +4,12 @@
  */
 package be.cvandenhauwe.aree.communication;
 
+import be.cvandenhauwe.aree.configuration.AreeConfiguration;
 import be.cvandenhauwe.aree.configuration.AreeReferee;
 import be.cvandenhauwe.aree.configuration.ConfigurationMgr;
+import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,7 +41,7 @@ public class DescriptorResource {
     private UriInfo context;
     
     @Inject
-    private AreeReferee ar;
+    private AreeReferee aref;
     
     @Inject
     private ConfigurationMgr cfmgr;
@@ -79,12 +80,18 @@ public class DescriptorResource {
             
             parseXML(content);
             
-            //ar.configByDesc(content);
-            //ar.process();
+            
+            AreeConfiguration config = cfmgr.getConfiguration(1);
+            System.out.println("got config: " + config.toString());
+            String out = (String) aref.process(config, "Ohai.");
+            System.out.println(out);
+            //System.out.println("TEST: " + aref.process(cfmgr.getConfiguration(1), "Hello CDI.").toString());
             
             return Response.status(201).entity("Your descriptor was succesfully received.").build();
         } catch (InvalidDescriptorException ex) {
             return Response.status(500).entity("Your descriptor is invalid: " + ex.getMessage()).build();
+        } catch (ComponentNotFoundException ex) {
+            return Response.status(500).entity(ex.getMessage()).build();
         }
     }
     
@@ -93,7 +100,7 @@ public class DescriptorResource {
         Document doc;
         try {
             doc = reader.read(new ByteArrayInputStream(content.getBytes()));
-        } catch (Exception ex) {
+        } catch (DocumentException ex) {
             Logger.getLogger(DescriptorResource.class.getName()).log(Level.SEVERE, null, ex);
             throw new InvalidDescriptorException("invalid XML");
         }
@@ -104,7 +111,7 @@ public class DescriptorResource {
             Element next = (Element) cIt.next();
             if(next.attribute("action").getData().equals("new")){
                 System.out.println("Descriptor contains new configuration.");
-                cfmgr.parseNewConfiguration(next);
+                cfmgr.parseNewConfiguration(null, next);
             }
         }
     }

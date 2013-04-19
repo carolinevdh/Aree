@@ -12,6 +12,6 @@ public class PlainOutput implements AreeOutput{
 
     @Override
     public Object produceOutput(Object obj) {
-        return obj;
+        return "plainoutput: " +obj;
     }    
 }

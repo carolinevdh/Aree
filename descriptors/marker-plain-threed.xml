@@ -15,9 +15,9 @@
 			</arguments>
 		</reasoner>
 		<output>
-			<class>be.cvandenhauwe.Aree.output.ThreeDOutput</class>
+			<class>be.cvandenhauwe.Aree.output.PlainOutput</class>
 			<version strategy="DESC"></version>
 			<arguments/>
-		</output>
+		</output>		
 	</configuration>
 </descriptor>

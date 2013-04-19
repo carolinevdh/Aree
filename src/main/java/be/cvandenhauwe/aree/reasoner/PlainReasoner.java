@@ -12,6 +12,6 @@ public class PlainReasoner implements AreeReasoner{
 
     @Override
     public Object process(Object obj) {
-        return obj;
+        return "plainreasoner: " +obj;
     }    
 }

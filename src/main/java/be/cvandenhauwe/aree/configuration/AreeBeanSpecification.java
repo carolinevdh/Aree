@@ -30,4 +30,8 @@ public class AreeBeanSpecification {
                 
         if(className.length() == 0) throw new InvalidDescriptorException("No class name provided for " + type);
     }
+
+    public String getClassName() {
+        return className;
+    }
 }

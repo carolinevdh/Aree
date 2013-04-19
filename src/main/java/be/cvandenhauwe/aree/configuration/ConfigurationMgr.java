@@ -7,6 +7,9 @@ package be.cvandenhauwe.aree.configuration;
 import java.util.HashMap;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
 import be.cvandenhauwe.aree.versioning.VersioningStrategy;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+import javax.ws.rs.Produces;
 import org.dom4j.Element;
 
 /**
@@ -17,7 +20,8 @@ public class ConfigurationMgr {
     private HashMap<Integer, AreeConfiguration> configurations = new HashMap<Integer, AreeConfiguration>();
     private int lastKey;
 
-    public void parseNewConfiguration(Element el) throws InvalidDescriptorException {
+    @Produces
+    public void parseNewConfiguration(@New AreeConfiguration config, Element el) throws InvalidDescriptorException {
         if(!isValidConfiguration(el)) throw new InvalidDescriptorException();
         
         int key = getUniqueKey();
@@ -26,8 +30,9 @@ public class ConfigurationMgr {
         Element reasonerEl = el.element("reasoner");
         Element outputEl = el.element("output");
         
-        AreeConfiguration cfg = new AreeConfiguration(key, inputEl, reasonerEl, outputEl);      
-        configurations.put(key, cfg);
+        //AreeConfiguration cfg = new AreeConfiguration(key, inputEl, reasonerEl, outputEl); 
+        config.setup(key, inputEl, reasonerEl, outputEl);
+        configurations.put(key, config);
     }
     
     public int getUniqueKey(){
@@ -41,5 +46,9 @@ public class ConfigurationMgr {
         if(el.elements("output").size() < 1) return false;
         
         return true;
+    }
+
+    public AreeConfiguration getConfiguration(int i) {
+        return configurations.get(i);
     }
 }

@@ -4,19 +4,19 @@
 	<configuration action="new">
 		<input>
 			<class>be.cvandenhauwe.Aree.input.MarkerInput</class>
-			<version>desc</version>
+			<version strategy="DESC"></version>
 			<arguments/>
 		</input>	
 		<reasoner>
 			<class>be.cvandenhauwe.Aree.reasoner.PlainReasoner</class>
-			<version>desc</version>
+			<version strategy="DESC"></version>
 			<arguments>
 				<database host="localhost" login="login" pass="pass" />
 			</arguments>
 		</reasoner>
 		<output>
 			<class>be.cvandenhauwe.Aree.output.ThreeDOutput</class>
-			<version>desc</version>
+			<version strategy="DESC"></version>
 			<arguments/>
 		</output>
 	</configuration>

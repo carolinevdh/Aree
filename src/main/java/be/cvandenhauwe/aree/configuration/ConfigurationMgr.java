@@ -19,7 +19,19 @@ import org.dom4j.Element;
 public class ConfigurationMgr {
     private HashMap<Integer, AreeConfiguration> configurations = new HashMap<Integer, AreeConfiguration>();
     private int lastKey;
+    
+    private static ConfigurationMgr singleton;
 
+    private ConfigurationMgr(){
+        configurations = new HashMap<Integer, AreeConfiguration>();
+        lastKey = -1;
+    }
+    
+    public static ConfigurationMgr getConfigurationMgr(){
+        if(singleton == null) singleton = new ConfigurationMgr();
+        return singleton;
+    }
+    
     @Produces
     public void parseNewConfiguration(@New AreeConfiguration config, Element el) throws InvalidDescriptorException {
         if(!isValidConfiguration(el)) throw new InvalidDescriptorException();

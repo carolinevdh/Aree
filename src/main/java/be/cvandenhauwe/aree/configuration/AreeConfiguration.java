@@ -11,6 +11,7 @@ import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
 import java.util.Iterator;
 import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import org.dom4j.Element;
@@ -19,6 +20,8 @@ import org.dom4j.Element;
  *
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
  */
+
+@Default
 public class AreeConfiguration {
     
     @Inject
@@ -36,6 +39,10 @@ public class AreeConfiguration {
     private AreeBeanSpecification specAI, specAR, specAO;
     
     private int id;
+    
+    public AreeConfiguration(){
+        
+    }
 
     AreeConfiguration(int key, Element inputEl, Element reasonerEl, Element outputEl) throws InvalidDescriptorException {
         System.out.println("new AreeConfiguration");
@@ -55,7 +62,6 @@ public class AreeConfiguration {
 //        ao = chooseOutput();
     }
 
-    @PostConstruct
     public AreeInput chooseInput() throws ComponentNotFoundException {
         System.out.println("Components found: ");       
         Iterator it = ais.iterator();

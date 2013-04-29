@@ -110,16 +110,20 @@ public class AreeConfiguration {
         throw new ComponentNotFoundException("Input " + specAI.getClassName() + " could not be found, no alternative was provided.");
     }
 
-    AreeInput getInput() {
+    public AreeInput getInput() {
         return ai;
     }
 
-    AreeReasoner getReasoner() {
+    public AreeReasoner getReasoner() {
         return ar;
     }
 
-    AreeOutput getOutput() {
+    public AreeOutput getOutput() {
         return ao;
+    }
+    
+    public Integer getKey(){
+        return id;
     }
     
 

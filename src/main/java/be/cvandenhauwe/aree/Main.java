@@ -28,7 +28,7 @@ public class Main {
     
     private static void sendXML(){
         try {
-            URL url = new URL("http://localhost:8080/Aree/descriptor/put");
+            URL url = new URL("http://localhost:8080/Aree/newconfiguration");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setRequestMethod("PUT");

@@ -78,7 +78,7 @@ public class NewConfigurationResource {
             //System.out.println(out);
             //System.out.println("TEST: " + aref.process(cfmgr.getConfiguration(1), "Hello CDI.").toString());
             
-            return Response.status(201).entity("Your descriptor was succesfully received.").build();
+            return Response.status(201).entity("Your descriptor was succesfully received, your config id is " + setupConfiguration.getKey() + ".").build();
         } catch (InvalidDescriptorException ex) {
             return Response.status(500).entity("Your descriptor is invalid: " + ex.getMessage()).build();
         //} catch (ComponentNotFoundException ex) {

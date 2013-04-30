@@ -58,6 +58,7 @@ public class NewConfigurationResource {
      */
     @PUT
     @Consumes("application/xml")
+    @Produces("application/json")
     public Response putXml(String content) {
         try {
             System.out.println("--Server received from client:--");
@@ -78,9 +79,9 @@ public class NewConfigurationResource {
             //System.out.println(out);
             //System.out.println("TEST: " + aref.process(cfmgr.getConfiguration(1), "Hello CDI.").toString());
             
-            return Response.status(201).entity("Your descriptor was succesfully received, your config id is " + setupConfiguration.getKey() + ".").build();
+            return Response.status(201).entity("{success: true, id: " + setupConfiguration.getKey() + "}").build();
         } catch (InvalidDescriptorException ex) {
-            return Response.status(500).entity("Your descriptor is invalid: " + ex.getMessage()).build();
+            return Response.status(500).entity("{success: false, message: Your descriptor is invalid. " + ex.getMessage() + "}").build();
         //} catch (ComponentNotFoundException ex) {
         //    return Response.status(500).entity(ex.getMessage()).build();
         }

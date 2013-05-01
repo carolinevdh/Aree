@@ -3,19 +3,19 @@
 <descriptor>
 	<configuration action="new">
 		<input>
-			<class>be.cvandenhauwe.Aree.input.MarkerInput</class>
+			<class>be.cvandenhauwe.aree.input.MarkerInput</class>
 			<version strategy="DESC"></version>
 			<arguments/>
 		</input>	
 		<reasoner>
-			<class>be.cvandenhauwe.Aree.reasoner.PlainReasoner</class>
+			<class>be.cvandenhauwe.aree.reasoner.PlainReasoner</class>
 			<version strategy="DESC"></version>
 			<arguments>
 				<database host="localhost" login="login" pass="pass" />
 			</arguments>
 		</reasoner>
 		<output>
-			<class>be.cvandenhauwe.Aree.output.PlainOutput</class>
+			<class>be.cvandenhauwe.aree.output.PlainOutput</class>
 			<version strategy="DESC"></version>
 			<arguments/>
 		</output>		

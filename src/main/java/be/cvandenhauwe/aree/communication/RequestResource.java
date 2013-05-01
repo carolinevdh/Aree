@@ -4,6 +4,12 @@
  */
 package be.cvandenhauwe.aree.communication;
 
+import be.cvandenhauwe.aree.configuration.AreeConfiguration;
+import be.cvandenhauwe.aree.configuration.AreeReferee;
+import be.cvandenhauwe.aree.configuration.ConfigurationMgr;
+import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.PathParam;
@@ -13,6 +19,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import net.sf.json.JSONObject;
 
@@ -28,6 +35,9 @@ public class RequestResource {
     @Context
     private UriInfo context;
 
+    @Inject
+    private AreeConfiguration injConfiguration;
+    
     /**
      * Creates a new instance of RequestResource
      */
@@ -53,11 +63,18 @@ public class RequestResource {
     @PUT
     @Consumes("application/json")
     public Response putJson(String content) {
+        Object output = new Object();
         
-        System.out.println("received PUT");
-        JSONObject json = JSONObject.fromObject(content);
-        System.out.println(json.toString());
+        System.out.println("Server received request: " + content);
+        JSONObject json = JSONObject.fromObject(content);        
+        AreeConfiguration config = ConfigurationMgr.getConfigurationMgr().getConfiguration(json.getInt("id"));
+        try {
+            config.refresh(injConfiguration);
+            output = AreeReferee.process(config, json.get("data"));
+        } catch (ComponentNotFoundException ex) {
+            return Response.status(500).entity(ex).build();
+        }
         
-        return Response.status(201).entity("Response after request").build();
+        return Response.status(201).entity(output.toString()).build();
     }
 }

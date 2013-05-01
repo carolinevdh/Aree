@@ -32,7 +32,7 @@ public class NewConfigurationResource {
     private UriInfo context;
     
     @Inject
-    private AreeConfiguration configuration;
+    private AreeConfiguration injConfig;
 
     /**
      * Creates a new instance of NewConfigurationResource
@@ -61,29 +61,16 @@ public class NewConfigurationResource {
     @Produces("application/json")
     public Response putXml(String content) {
         try {
-            System.out.println("--Server received from client:--");
+            System.out.println("Server: received new configuration from client: ---");
             System.out.println(content);
             System.out.println("--------------end---------------");
            
-            ConfigurationMgr mgr = ConfigurationMgr.getConfigurationMgr();
-            AreeConfiguration setupConfiguration = parseXMLToConfiguration(content, configuration);
-            mgr.addNewConfiguration(setupConfiguration.getKey(), setupConfiguration);
+            AreeConfiguration config = parseXMLToConfiguration(content, injConfig);
+            ConfigurationMgr.getConfigurationMgr().addNewConfiguration(config.getKey(), config);
             
-            
-            
-            //AreeConfiguration config = cfmgr.getConfiguration(1);
-            //System.out.println("got config: " + configinjected.toString());
-            //System.out.println(count);
-            //count++;
-            //String out = (String) aref.process(config, "Ohai.");
-            //System.out.println(out);
-            //System.out.println("TEST: " + aref.process(cfmgr.getConfiguration(1), "Hello CDI.").toString());
-            
-            return Response.status(201).entity("{success: true, id: " + setupConfiguration.getKey() + "}").build();
+            return Response.status(201).entity("{success: true, id: " + config.getKey() + "}").build();
         } catch (InvalidDescriptorException ex) {
             return Response.status(500).entity("{success: false, message: Your descriptor is invalid. " + ex.getMessage() + "}").build();
-        //} catch (ComponentNotFoundException ex) {
-        //    return Response.status(500).entity(ex.getMessage()).build();
         }
     }
     

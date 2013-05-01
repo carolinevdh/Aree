@@ -61,6 +61,7 @@ public class ConfigurationMgr {
     }
 
     public AreeConfiguration getConfiguration(int i) {
+        if(!configurations.containsKey(i)) System.out.println("Server: oops, requesting non-existent configuration " + i);
         return configurations.get(i);
     }
 

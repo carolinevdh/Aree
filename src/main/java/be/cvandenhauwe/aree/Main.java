@@ -41,6 +41,7 @@ public class Main {
             String descriptorPath = "/Users/caroline/Thesis/Code/Aree/descriptors/";
             String descriptor = "marker-plain-threed.xml"; //EDIT THIS
             input = new FileInputStream(descriptorPath + descriptor);
+            System.out.println("Client: requesting new configuration");
             HttpURLConnection conn = connect(
                     new URL("http://localhost:8080/Aree/newconfiguration"),
                     "application/xml",
@@ -58,9 +59,8 @@ public class Main {
 //            }
 //            System.out.println("---------end-----------");
             
-            System.out.println("received id: " + json.get("id"));
+            System.out.println("Client: received configuration with id: " + json.get("id"));
             conn.disconnect();
-            int configid = json.getInt("id");
             
             // USE CONFIGURATION //     
             
@@ -68,12 +68,12 @@ public class Main {
             JSONObject request = new JSONObject();
             request.accumulate("id", json.get("id"));
             request.accumulate("data", "Hello World");
-            
+            System.out.println("Client: Sending " + request.toString());
             HttpURLConnection requestConn = 
                     connect(new URL("http://localhost:8080/Aree/request"),
                     "application/json", request.toString().getBytes("UTF-8"));
             
-            System.out.println(requestConn.getInputStream().toString());
+            System.out.println("Client: Response from request: " + readAll(new InputStreamReader(requestConn.getInputStream())));
             
             
         } catch (FileNotFoundException ex) {

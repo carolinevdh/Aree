@@ -15,7 +15,7 @@ import javax.enterprise.inject.Default;
 public class PlainInput implements AreeInput{
 
     @Override
-    public Object produceInput(Object obj) {
+    public Object process(Object obj) {
         return obj;
     }    
 }

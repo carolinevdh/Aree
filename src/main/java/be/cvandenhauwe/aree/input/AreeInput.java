@@ -4,10 +4,11 @@
  */
 package be.cvandenhauwe.aree.input;
 
+import be.cvandenhauwe.aree.configuration.AreeComponent;
+
 /**
  *
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
  */
-public interface AreeInput {
-    public Object produceInput(Object obj);
+public interface AreeInput extends AreeComponent{
 }

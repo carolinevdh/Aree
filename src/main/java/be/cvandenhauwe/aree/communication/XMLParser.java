@@ -6,6 +6,8 @@ package be.cvandenhauwe.aree.communication;
 
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,9 +28,17 @@ public class XMLParser {
         try {
             doc = reader.read(new ByteArrayInputStream(xml.getBytes()));
         } catch (DocumentException ex) {
-            Logger.getLogger(DescriptorResource.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XMLParser.class.getName()).log(Level.SEVERE, null, ex);
             throw new InvalidDescriptorException("invalid XML");
         }
         return doc.getRootElement();
+    }
+    
+    public static Collection<String> ElementToChildrenTextList(Element el, String tag){
+        ArrayList<String> list = new ArrayList<String>();
+        Iterator it = el.elementIterator(tag);
+        while(it.hasNext())
+            list.add(((Element) it.next()).getText());
+        return list;
     }
 }

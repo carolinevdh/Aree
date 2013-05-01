@@ -10,7 +10,8 @@ import be.cvandenhauwe.aree.reasoner.AreeReasoner;
 import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
 import java.util.Iterator;
-import javax.annotation.PostConstruct;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -40,6 +41,8 @@ public class AreeConfiguration {
     
     private int id;
     
+    private boolean ready;
+    
     public AreeConfiguration(){
         
     }
@@ -54,60 +57,38 @@ public class AreeConfiguration {
         specAO = new AreeBeanSpecification(AreeType.OUTPUT, outputEl);   
     }   
     
-    @PostConstruct
-    public void chooseComponents(){        
-        System.out.println("++++++++++++++++++++++++++++++++++ Injection happened in AreeConfiguration. ++++++++++++++++++++++++++++++++++");
-//        ai = chooseInput();
-//        ar = chooseReasoner();
-//        ao = chooseOutput();
-    }
-
-    public AreeInput chooseInput() throws ComponentNotFoundException {
-        System.out.println("Components found: ");       
-        Iterator it = ais.iterator();
-        while(it.hasNext()){
-            Object next = it.next();
-            String cls = next.getClass().getCanonicalName();
-            System.out.println(cls);
-            if(cls.equals(specAI.getClassName())){
-                System.out.println("chosen: " + next.getClass().getCanonicalName());
-                return (AreeInput) next;
-            }
+    public void refresh(AreeConfiguration newConfig) throws ComponentNotFoundException{
+        System.out.println("Server: refreshing config " + id + ": ready? " + ready + ", injected? " + newConfig);
+        if(ready){
+                if(!specAI.isPreferred(ai.getClass().getCanonicalName()))
+                    ai = chooseComponent(newConfig.ais, specAI, "input");
+                if(!specAR.isPreferred(ar.getClass().getCanonicalName()))
+                    ar = chooseComponent(newConfig.ars, specAR, "reasoner");
+                if(!specAO.isPreferred(ao.getClass().getCanonicalName()))
+                    ao = chooseComponent(newConfig.aos, specAO, "output");
+        }else{
+            ai = chooseComponent(newConfig.ais, specAI, "input");
+            ar = chooseComponent(newConfig.ars, specAR, "reasoner");
+            ao = chooseComponent(newConfig.aos, specAO, "output");
         }
-        
-        throw new ComponentNotFoundException("Input " + specAI.getClassName() + " could not be found, no alternative was provided.");
     }
-
-    public AreeReasoner chooseReasoner() throws ComponentNotFoundException {
-        System.out.println("Components found: ");       
-        Iterator it = ars.iterator();
-        while(it.hasNext()){
-            Object next = it.next();
-            String cls = next.getClass().getCanonicalName();
-            System.out.println(cls);
-            if(cls.equals(specAR.getClassName())){
-                System.out.println("chosen: " + next.getClass().getCanonicalName());
-                return (AreeReasoner) next;
+    
+    public <T extends AreeComponent> T chooseComponent(Instance<T> instances, AreeBeanSpecification spec, String type) throws ComponentNotFoundException {
+        System.out.println("Server: choosing " + type + "-type component.");
+        for(int i = 0; i < spec.size(); i++){
+            Iterator it = instances.iterator();
+            while(it.hasNext()){
+                Object next = it.next();
+                String cls = next.getClass().getCanonicalName();
+                System.out.println(cls);
+                if(cls.equalsIgnoreCase(spec.getClassName(i))){
+                    System.out.println("chosen: " + next.getClass().getCanonicalName());
+                    return (T) next;
+                }
             }
-        }
+        }        
         
-        throw new ComponentNotFoundException("Reasoner " + specAR.getClassName() + " could not be found, no alternative was provided.");
-    }
-
-    public AreeOutput chooseOutput() throws ComponentNotFoundException {
-        System.out.println("Components found: ");       
-        Iterator it = aos.iterator();
-        while(it.hasNext()){
-            Object next = it.next();
-            String cls = next.getClass().getCanonicalName();
-            System.out.println(cls);
-            if(cls.equals(specAO.getClassName())){
-                System.out.println("chosen: " + next.getClass().getCanonicalName());
-                return (AreeOutput) next;
-            }
-        }
-        
-        throw new ComponentNotFoundException("Input " + specAI.getClassName() + " could not be found, no alternative was provided.");
+        throw new ComponentNotFoundException("No Input could be found.");
     }
 
     public AreeInput getInput() {
@@ -128,13 +109,13 @@ public class AreeConfiguration {
     
 
     public void setup(int key, Element inputEl, Element reasonerEl, Element outputEl) throws InvalidDescriptorException {
-        System.out.println("setup AreeConfiguration");
-        
+             
         id = key;        
           
         specAI = new AreeBeanSpecification(AreeType.INPUT, inputEl);
         specAR = new AreeBeanSpecification(AreeType.REASONER, reasonerEl);
         specAO = new AreeBeanSpecification(AreeType.OUTPUT, outputEl); 
-    }
-    
+        
+        System.out.println("Server: setup AreeConfiguration " + key + ": " + specAI + specAR + specAO);
+    }    
 }

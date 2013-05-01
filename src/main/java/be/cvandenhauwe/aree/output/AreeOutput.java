@@ -4,10 +4,11 @@
  */
 package be.cvandenhauwe.aree.output;
 
+import be.cvandenhauwe.aree.configuration.AreeComponent;
+
 /**
  *
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
  */
-public interface AreeOutput {
-    public Object produceOutput(Object obj);
+public interface AreeOutput extends AreeComponent {
 }

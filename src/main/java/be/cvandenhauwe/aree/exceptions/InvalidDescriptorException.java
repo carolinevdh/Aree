@@ -13,6 +13,5 @@ public class InvalidDescriptorException extends Exception {
     public InvalidDescriptorException() {}
     public InvalidDescriptorException(String message){
         super(message);
-    }
-    
+    }    
 }

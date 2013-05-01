@@ -4,8 +4,10 @@
  */
 package be.cvandenhauwe.aree.configuration;
 
+import be.cvandenhauwe.aree.communication.XMLParser;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
 import be.cvandenhauwe.aree.versioning.VersioningStrategy;
+import java.util.ArrayList;
 import org.dom4j.Element;
 
 /**
@@ -15,7 +17,7 @@ import org.dom4j.Element;
 public class AreeBeanSpecification {
     private AreeType type;
     
-    private String className;
+    private ArrayList<String> classNames = new ArrayList<String>();
     
     private VersioningStrategy vStrategy;
     private String vStart;    //optional 
@@ -24,14 +26,29 @@ public class AreeBeanSpecification {
 
     AreeBeanSpecification(AreeType areeType, Element element) throws InvalidDescriptorException {
         type = areeType;
-        className = element.elementText("class");
+        classNames.addAll(XMLParser.ElementToChildrenTextList(element, "class"));
         vStart = element.elementText("version");
         vStrategy = VersioningStrategy.valueOf(element.element("version").attributeValue("strategy"));
                 
-        if(className.length() == 0) throw new InvalidDescriptorException("No class name provided for " + type);
+        if(classNames.isEmpty() || classNames.get(0).length() == 0)
+            throw new InvalidDescriptorException("No class name provided for " + type);
     }
 
-    public String getClassName() {
-        return className;
+    public String getClassName(int index) {
+        return classNames.get(index);
+    }
+    
+    public boolean isPreferred(String className){
+        return classNames.get(0).equals(className);
+    }
+
+    public int size() {
+        return classNames.size();
+    }
+    
+    @Override
+    public String toString(){
+        
+        return type.name() + ": " + classNames.toString();
     }
 }

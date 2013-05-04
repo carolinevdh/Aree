@@ -16,6 +16,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.POST;
 import javax.ws.rs.core.Response;
 import org.dom4j.Element;
 
@@ -33,33 +34,26 @@ public class NewConfigurationResource {
     
     @Inject
     private AreeConfiguration injConfig;
+    
+    String response = "{msg: 'Welcome to Aree'}";
 
     /**
      * Creates a new instance of NewConfigurationResource
      */
-    public NewConfigurationResource() {
-    }
+    public NewConfigurationResource() { }
 
-    /**
-     * Retrieves representation of an instance of be.cvandenhauwe.aree.communication.NewConfigurationResource
-     * @return an instance of java.lang.String
-     */
     @GET
-    @Produces("application/xml")
-    public String getXml() {
-        //TODO return proper representation object
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * PUT method for updating or creating an instance of NewConfigurationResource
-     * @param content representation for the resource
-     * @return an HTTP response with content of the updated or created resource.
-     */
-    @PUT
-    @Consumes("application/xml")
+    @Path("get")
     @Produces("application/json")
-    public Response putXml(String content) {
+    public String getJson() {
+        System.out.println("Server: some client said hi!");
+        return response;
+    }
+    
+    @POST
+    @Path("post")
+    @Consumes("application/xml")
+    public Response postXml(String content) {
         try {
             System.out.println("Server: received new configuration from client: ---");
             System.out.println(content);
@@ -68,8 +62,10 @@ public class NewConfigurationResource {
             AreeConfiguration config = parseXMLToConfiguration(content, injConfig);
             ConfigurationMgr.getConfigurationMgr().addNewConfiguration(config.getKey(), config);
             
+            //response = "{success: true, id: " + config.getKey() + "}";
             return Response.status(201).entity("{success: true, id: " + config.getKey() + "}").build();
         } catch (InvalidDescriptorException ex) {
+            //response = "{success: false, message: Your descriptor is invalid. " + ex.getMessage() + "}";
             return Response.status(500).entity("{success: false, message: Your descriptor is invalid. " + ex.getMessage() + "}").build();
         }
     }

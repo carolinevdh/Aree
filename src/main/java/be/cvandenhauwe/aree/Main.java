@@ -38,15 +38,16 @@ public class Main {
         // SETUP CONFIGURATION //
         FileInputStream input = null;
         try {
+            System.out.println();
+            
             String descriptorPath = "/Users/caroline/Thesis/Code/Aree/descriptors/";
             String descriptor = "marker-plain-threed.xml"; //EDIT THIS
             input = new FileInputStream(descriptorPath + descriptor);
             System.out.println("Client: requesting new configuration");
             HttpURLConnection conn = connect(
-                    new URL("http://localhost:8080/Aree/newconfiguration"),
+                    new URL("http://localhost:8080/Aree/newconfiguration/post"),
                     "application/xml",
-                    IOUtils.toByteArray(input));
-            
+                    IOUtils.toByteArray(input), "POST");
             
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String jsonText = readAll(br);
@@ -71,7 +72,7 @@ public class Main {
             System.out.println("Client: Sending " + request.toString());
             HttpURLConnection requestConn = 
                     connect(new URL("http://localhost:8080/Aree/request"),
-                    "application/json", request.toString().getBytes("UTF-8"));
+                    "application/json", request.toString().getBytes("UTF-8"), "PUT");
             
             System.out.println("Client: Response from request: " + readAll(new InputStreamReader(requestConn.getInputStream())));
             
@@ -92,19 +93,22 @@ public class Main {
             
     }
     
-    private static HttpURLConnection connect(URL url, String contentType, byte[] bs){
+    private static HttpURLConnection connect(URL url, String contentType, byte[] bs, String requestMethod){
         try {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
-            conn.setRequestMethod("PUT");
+            conn.setRequestMethod(requestMethod);
             conn.setRequestProperty("Content-Type", contentType);
+            
             
             OutputStream os = conn.getOutputStream();            
             os.write(bs);
             os.flush();
             
+            
+            
             if(conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
-                throw new RuntimeException("Failed: HTTP error code: " + conn.getResponseCode());
+                System.out.println("Failed: HTTP error code: " + conn.getResponseCode());
             }
             
             //conn.disconnect();

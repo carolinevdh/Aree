@@ -11,7 +11,7 @@ package be.cvandenhauwe.aree.reasoner;
 public class PlainReasoner implements AreeReasoner{
 
     @Override
-    public Object process(Object obj) {
+    public Object process(Object obj) throws Exception{
         return "plainreasoner: " +obj;
     }    
 }

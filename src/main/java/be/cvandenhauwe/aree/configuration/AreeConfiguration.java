@@ -47,15 +47,15 @@ public class AreeConfiguration {
         
     }
 
-    AreeConfiguration(int key, Element inputEl, Element reasonerEl, Element outputEl) throws InvalidDescriptorException {
-        System.out.println("new AreeConfiguration");
-        
-        id = key;        
-          
-        specAI = new AreeBeanSpecification(AreeType.INPUT, inputEl);
-        specAR = new AreeBeanSpecification(AreeType.REASONER, reasonerEl);
-        specAO = new AreeBeanSpecification(AreeType.OUTPUT, outputEl);   
-    }   
+//    AreeConfiguration(int key, Element inputEl, Element reasonerEl, Element outputEl) throws InvalidDescriptorException {
+//        System.out.println("new AreeConfiguration, reasoner contains " + reasonerEl);
+//        
+//        id = key;        
+//          
+//        specAI = new AreeBeanSpecification(AreeType.INPUT, inputEl);
+//        specAR = new AreeBeanSpecification(AreeType.REASONER, reasonerEl);
+//        specAO = new AreeBeanSpecification(AreeType.OUTPUT, outputEl);   
+//    }   
     
     public void refresh(AreeConfiguration newConfig) throws ComponentNotFoundException{
         System.out.println("Server: refreshing config " + id + ": ready? " + ready + ", injected? " + newConfig);
@@ -74,8 +74,9 @@ public class AreeConfiguration {
     }
     
     public <T extends AreeComponent> T chooseComponent(Instance<T> instances, AreeBeanSpecification spec, String type) throws ComponentNotFoundException {
-        System.out.println("Server: choosing " + type + "-type component.");
+        System.out.println("Server: choosing " + type + "-type component out of " + spec.size() + " prefered.");
         for(int i = 0; i < spec.size(); i++){
+            System.out.println("Server: looking for a match to " + spec.getClassName(i));
             Iterator it = instances.iterator();
             while(it.hasNext()){
                 Object next = it.next();
@@ -86,6 +87,7 @@ public class AreeConfiguration {
                     return (T) next;
                 }
             }
+            System.out.println("Server: out of instances.");
         }        
         
         throw new ComponentNotFoundException("No Input could be found.");

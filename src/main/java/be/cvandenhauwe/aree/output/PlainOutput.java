@@ -11,7 +11,7 @@ package be.cvandenhauwe.aree.output;
 public class PlainOutput implements AreeOutput{
 
     @Override
-    public Object process(Object obj) {
+    public Object process(Object obj) throws Exception{
         return "plainoutput: " +obj;
     }    
 }

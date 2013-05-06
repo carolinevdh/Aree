@@ -12,7 +12,7 @@ import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
  */
 public class AreeReferee {
     
-    public static Object process(AreeConfiguration configuration, Object data) throws ComponentNotFoundException {
+    public static Object process(AreeConfiguration configuration, Object data) throws ComponentNotFoundException, Exception {
         //input
         Object inputDone = configuration.getInput().process(data);
         

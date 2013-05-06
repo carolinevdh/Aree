@@ -71,8 +71,8 @@ public class Main {
             request.accumulate("data", "Hello World");
             System.out.println("Client: Sending " + request.toString());
             HttpURLConnection requestConn = 
-                    connect(new URL("http://localhost:8080/Aree/request"),
-                    "application/json", request.toString().getBytes("UTF-8"), "PUT");
+                    connect(new URL("http://localhost:8080/Aree/request/post"),
+                    "application/json", request.toString().getBytes("UTF-8"), "POST");
             
             System.out.println("Client: Response from request: " + readAll(new InputStreamReader(requestConn.getInputStream())));
             

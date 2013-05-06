@@ -14,7 +14,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
@@ -49,20 +49,18 @@ public class RequestResource {
      * @return an instance of java.lang.String
      */
     @GET
+    @Path("get")
     @Produces("application/json")
     public String getJson() {
         //TODO return proper representation object
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * PUT method for updating or creating an instance of RequestResource
-     * @param content representation for the resource
-     * @return an HTTP response with content of the updated or created resource.
-     */
-    @PUT
+    
+    @POST
+    @Path("post")
     @Consumes("application/json")
-    public Response putJson(String content) {
+    public Response postJson(String content) {
         Object output = new Object();
         
         System.out.println("Server received request: " + content);
@@ -71,10 +69,12 @@ public class RequestResource {
         try {
             config.refresh(injConfiguration);
             output = AreeReferee.process(config, json.get("data"));
-        } catch (ComponentNotFoundException ex) {
-            return Response.status(500).entity(ex).build();
+            System.out.println("Server: success, generating output: " + output);
+        } catch (Exception ex) {
+            System.out.println("Server: Exception, " + ex.getMessage());
+            return Response.status(500).entity("{\"succes\": false, \"message\": \"Error: "+ ex.getMessage() +"\"").build();
         }
-        
         return Response.status(201).entity(output.toString()).build();
+        //return Response.status(201).entity("{\"succes\": true, \"message\": \""+ output.toString() +"\"").build();
     }
 }

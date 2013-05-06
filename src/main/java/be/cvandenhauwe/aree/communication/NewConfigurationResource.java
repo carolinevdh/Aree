@@ -63,10 +63,10 @@ public class NewConfigurationResource {
             ConfigurationMgr.getConfigurationMgr().addNewConfiguration(config.getKey(), config);
             
             //response = "{success: true, id: " + config.getKey() + "}";
-            return Response.status(201).entity("{success: true, id: " + config.getKey() + "}").build();
+            return Response.status(201).entity("{\"success\": true, \"id\": " + config.getKey() + "}").build();
         } catch (InvalidDescriptorException ex) {
             //response = "{success: false, message: Your descriptor is invalid. " + ex.getMessage() + "}";
-            return Response.status(500).entity("{success: false, message: Your descriptor is invalid. " + ex.getMessage() + "}").build();
+            return Response.status(500).entity("{\"success\": false, \"message\": \"Your descriptor is invalid. " + ex.getMessage() + "\"}").build();
         }
     }
     

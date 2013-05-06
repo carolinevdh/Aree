@@ -15,7 +15,7 @@ import javax.enterprise.inject.Default;
 public class MarkerInput implements AreeInput{
 
     @Override
-    public Object process(Object obj) {
+    public Object process(Object obj) throws Exception{
         System.out.println(obj.toString() + " as a Marker received.");
         return "Marker["+obj+"]";
     }

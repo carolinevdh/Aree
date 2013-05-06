@@ -14,17 +14,12 @@ import java.sql.Statement;
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
  */
 public class SQLiteQueryReasoner implements AreeReasoner{
-
-    String dbname;
-    
-    public SQLiteQueryReasoner(String dbname){
-        this.dbname = dbname;
-    }
-    
+  
     
     @Override
-    public Object process(Object obj) throws Exception {        
-        Connection connection = DriverManager.getConnection("jdbc:sqlite:/users/caroline/Development/Chemistry.db");
+    public Object process(Object obj) throws Exception { 
+        Class.forName("org.sqlite.JDBC");
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:/users/caroline/Development/Tools/Chemistry.db");
 
         Statement statement = connection.createStatement();
 

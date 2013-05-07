@@ -22,7 +22,7 @@ public class AreeBeanSpecification {
     private VersioningStrategy vStrategy;
     private String vStart;    //optional 
     
-    private Element arguments; //bean specific arguments, to be handled later
+    private Element setupArgs; //bean specific arguments, to be handled later
 
     AreeBeanSpecification(AreeType areeType, Element element) throws InvalidDescriptorException {
         type = areeType;
@@ -32,6 +32,11 @@ public class AreeBeanSpecification {
                 
         if(classNames.isEmpty() || classNames.get(0).length() == 0)
             throw new InvalidDescriptorException("No class name provided for " + type);
+        
+        
+        if(element.element("arguments").hasContent()){
+            setupArgs = element.element("arguments").element("setup");
+        }
     }
 
     public String getClassName(int index) {
@@ -44,6 +49,14 @@ public class AreeBeanSpecification {
 
     public int size() {
         return classNames.size();
+    }
+    
+    public boolean hasSetupArguments(){
+        return setupArgs != null;
+    }
+    
+    public Element getSetupArguments(){
+        return setupArgs;
     }
     
     @Override

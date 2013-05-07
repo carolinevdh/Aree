@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.dom4j.Element;
 
 /**
  *
@@ -48,5 +49,10 @@ public class ResultSettoJSONOutput implements AreeOutput{
             jo.accumulate("error", e.getMessage());
         }
         return jo;
+    }
+
+    @Override
+    public void setup(Element setupArguments) {
+        //
     }
 }

@@ -5,6 +5,7 @@
 package be.cvandenhauwe.aree.input;
 
 import javax.enterprise.inject.Default;
+import org.dom4j.Element;
 
 /**
  *
@@ -18,4 +19,9 @@ public class PlainInput implements AreeInput{
     public Object process(Object obj) throws Exception{
         return obj;
     }    
+
+    @Override
+    public void setup(Element setupArguments) {
+        //
+    }
 }

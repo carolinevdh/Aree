@@ -43,21 +43,10 @@ public class AreeConfiguration {
     
     private boolean ready;
     
-    public AreeConfiguration(){
-        
+    public AreeConfiguration(){    
     }
-
-//    AreeConfiguration(int key, Element inputEl, Element reasonerEl, Element outputEl) throws InvalidDescriptorException {
-//        System.out.println("new AreeConfiguration, reasoner contains " + reasonerEl);
-//        
-//        id = key;        
-//          
-//        specAI = new AreeBeanSpecification(AreeType.INPUT, inputEl);
-//        specAR = new AreeBeanSpecification(AreeType.REASONER, reasonerEl);
-//        specAO = new AreeBeanSpecification(AreeType.OUTPUT, outputEl);   
-//    }   
     
-    public void refresh(AreeConfiguration newConfig) throws ComponentNotFoundException{
+    public void refresh(AreeConfiguration newConfig) throws ComponentNotFoundException, Exception{
         System.out.println("Server: refreshing config " + id + ": ready? " + ready + ", injected? " + newConfig);
         if(ready){
                 if(!specAI.isPreferred(ai.getClass().getCanonicalName()))
@@ -73,7 +62,7 @@ public class AreeConfiguration {
         }
     }
     
-    public <T extends AreeComponent> T chooseComponent(Instance<T> instances, AreeBeanSpecification spec, String type) throws ComponentNotFoundException {
+    public <T extends AreeComponent> T chooseComponent(Instance<T> instances, AreeBeanSpecification spec, String type) throws ComponentNotFoundException, Exception {
         System.out.println("Server: choosing " + type + "-type component out of " + spec.size() + " prefered.");
         for(int i = 0; i < spec.size(); i++){
             System.out.println("Server: looking for a match to " + spec.getClassName(i));
@@ -84,7 +73,11 @@ public class AreeConfiguration {
                 System.out.println(cls);
                 if(cls.equalsIgnoreCase(spec.getClassName(i))){
                     System.out.println("chosen: " + next.getClass().getCanonicalName());
-                    return (T) next;
+                    //return (T) next;
+                    if(spec.hasSetupArguments())
+                        return setupComponentWithArguments((T) next, spec.getSetupArguments());
+                    else
+                        return (T) next;
                 }
             }
             System.out.println("Server: out of instances.");
@@ -120,4 +113,9 @@ public class AreeConfiguration {
         
         System.out.println("Server: setup AreeConfiguration " + key + ": " + specAI + specAR + specAO);
     }    
+
+    private <T extends AreeComponent> T setupComponentWithArguments(AreeComponent next, Element setupArguments) throws Exception {
+        if(setupArguments.hasContent())  next.setup(setupArguments);
+        return (T) next;
+    }
 }

@@ -10,22 +10,23 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import org.dom4j.Element;
+import org.sqlite.SQLiteConfig;
 
 /**
  *
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
  */
-public class SQLiteQueryReasoner implements AreeReasoner{
+public abstract class SQLiteQueryReasoner implements AreeReasoner{
   
     String databaseName = "";
         
     @Override
-    public Object process(Object obj) throws Exception {
+    public Object process(Object obj) throws Exception{
         Class.forName("org.sqlite.JDBC");
         Connection connection = DriverManager.getConnection(
-                "jdbc:sqlite:../Aree-files/" + databaseName + ".db");
+                "jdbc:sqlite:../Aree-files/" + databaseName + ".db", getConfig().toProperties());
  
-       Statement statement = connection.createStatement();
+        Statement statement = connection.createStatement();
 
         statement.setQueryTimeout(30); //seconds
         ResultSet rs = statement.executeQuery(obj.toString());
@@ -36,5 +37,8 @@ public class SQLiteQueryReasoner implements AreeReasoner{
     public void setup(Element setupArguments) throws InvalidDescriptorException{
         databaseName = setupArguments.elementText("dbname");
         if(databaseName.isEmpty()) 
-            throw new InvalidDescriptorException("SQLiteQueryReasoner: Database name was not provided.");    }
+            throw new InvalidDescriptorException("SQLiteQueryReasoner: Database name was not provided.");    
+    }
+    
+    abstract SQLiteConfig getConfig();
 }

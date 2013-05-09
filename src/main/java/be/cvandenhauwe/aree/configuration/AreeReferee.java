@@ -12,14 +12,14 @@ import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
  */
 public class AreeReferee {
     
-    public static Object process(AreeConfiguration configuration, Object data) throws ComponentNotFoundException, Exception {
+    public static Object process(AreeConfiguration configuration, AreeArguments runtimeArguments, Object data) throws ComponentNotFoundException, Exception {
         //input
-        Object inputDone = configuration.getInput().process(data);
+        Object inputDone = configuration.getInput().process(runtimeArguments, data);
         
         //reasoner        
-        Object reasonerDone = configuration.getReasoner().process(inputDone);
+        Object reasonerDone = configuration.getReasoner().process(runtimeArguments, inputDone);
         
         //output
-        return configuration.getOutput().process(reasonerDone);
+        return configuration.getOutput().process(runtimeArguments, reasonerDone);
     }
 }

@@ -4,6 +4,7 @@
  */
 package be.cvandenhauwe.aree.communication;
 
+import be.cvandenhauwe.aree.configuration.AreeArguments;
 import be.cvandenhauwe.aree.configuration.AreeConfiguration;
 import be.cvandenhauwe.aree.configuration.AreeReferee;
 import be.cvandenhauwe.aree.configuration.ConfigurationMgr;
@@ -67,8 +68,10 @@ public class RequestResource {
         JSONObject json = JSONObject.fromObject(content);        
         AreeConfiguration config = ConfigurationMgr.getConfigurationMgr().getConfiguration(json.getInt("id"));
         try {
+            if(!json.containsKey("args")) System.out.println("Server: no runtime arguments specified" );
             config.refresh(injConfiguration);
-            output = AreeReferee.process(config, json.get("data"));
+            output = AreeReferee.process(
+                    config, AreeArguments.getArgumentsFromJSON(json.getJSONObject("args")), json.get("data"));
             System.out.println("Server: success, generating output: " + output);
         } catch (Exception ex) {
             System.out.println("Server: Exception, " + ex.getMessage());

@@ -10,8 +10,6 @@ import be.cvandenhauwe.aree.reasoner.AreeReasoner;
 import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -114,8 +112,8 @@ public class AreeConfiguration {
         System.out.println("Server: setup AreeConfiguration " + key + ": " + specAI + specAR + specAO);
     }    
 
-    private <T extends AreeComponent> T setupComponentWithArguments(AreeComponent next, Element setupArguments) throws Exception {
-        if(setupArguments.hasContent())  next.setup(setupArguments);
+    private <T extends AreeComponent> T setupComponentWithArguments(AreeComponent next, AreeArguments setupArguments) throws Exception {
+        if(!setupArguments.isEmpty())  next.setup(setupArguments);
         return (T) next;
     }
 }

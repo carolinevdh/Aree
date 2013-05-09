@@ -4,7 +4,7 @@
  */
 package be.cvandenhauwe.aree.reasoner;
 
-import org.dom4j.Element;
+import be.cvandenhauwe.aree.configuration.AreeArguments;
 
 /**
  *
@@ -13,12 +13,11 @@ import org.dom4j.Element;
 public class PlainReasoner implements AreeReasoner{
 
     @Override
-    public Object process(Object obj) throws Exception{
-        return "plainreasoner: " +obj;
-    }    
+    public Object process(AreeArguments runtimeArguments, Object obj) throws Exception {
+        return obj;
+    }
 
     @Override
-    public void setup(Element setupArguments) {
-        //
+    public void setup(AreeArguments setupArguments) throws Exception {
     }
 }

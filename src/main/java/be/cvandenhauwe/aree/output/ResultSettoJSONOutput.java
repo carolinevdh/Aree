@@ -4,6 +4,7 @@
  */
 package be.cvandenhauwe.aree.output;
 
+import be.cvandenhauwe.aree.configuration.AreeArguments;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -19,7 +20,7 @@ import org.dom4j.Element;
 public class ResultSettoJSONOutput implements AreeOutput{
     
     @Override
-    public Object process(Object obj) throws Exception {
+    public Object process(AreeArguments runtimeArgs, Object obj) throws Exception {
         JSONObject element = null;
         JSONArray joa = new JSONArray();
         JSONObject jo = new JSONObject();
@@ -52,7 +53,7 @@ public class ResultSettoJSONOutput implements AreeOutput{
     }
 
     @Override
-    public void setup(Element setupArguments) {
+    public void setup(AreeArguments setupArguments) {
         //
     }
 }

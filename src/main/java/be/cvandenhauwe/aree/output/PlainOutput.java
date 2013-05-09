@@ -4,7 +4,7 @@
  */
 package be.cvandenhauwe.aree.output;
 
-import org.dom4j.Element;
+import be.cvandenhauwe.aree.configuration.AreeArguments;
 
 /**
  *
@@ -13,12 +13,12 @@ import org.dom4j.Element;
 public class PlainOutput implements AreeOutput{
 
     @Override
-    public Object process(Object obj) throws Exception{
+    public Object process(AreeArguments runtimeArgs, Object obj) throws Exception{
         return "plainoutput: " +obj;
     }    
 
     @Override
-    public void setup(Element setupArguments) {
+    public void setup(AreeArguments setupArguments) {
         //
     }
 }

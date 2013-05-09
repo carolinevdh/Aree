@@ -4,6 +4,7 @@
  */
 package be.cvandenhauwe.aree.reasoner;
 
+import be.cvandenhauwe.aree.configuration.AreeArguments;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,7 +22,7 @@ public abstract class SQLiteQueryReasoner implements AreeReasoner{
     String databaseName = "";
         
     @Override
-    public Object process(Object obj) throws Exception{
+    public Object process(AreeArguments runtimeArgs, Object obj) throws Exception{
         Class.forName("org.sqlite.JDBC");
         Connection connection = DriverManager.getConnection(
                 "jdbc:sqlite:../Aree-files/" + databaseName + ".db", getConfig().toProperties());
@@ -34,8 +35,8 @@ public abstract class SQLiteQueryReasoner implements AreeReasoner{
     }
 
     @Override
-    public void setup(Element setupArguments) throws InvalidDescriptorException{
-        databaseName = setupArguments.elementText("dbname");
+    public void setup(AreeArguments setupArguments) throws InvalidDescriptorException{
+        databaseName = setupArguments.get("dbname").toString();
         if(databaseName.isEmpty()) 
             throw new InvalidDescriptorException("SQLiteQueryReasoner: Database name was not provided.");    
     }

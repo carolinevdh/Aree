@@ -4,8 +4,7 @@
  */
 package be.cvandenhauwe.aree.input;
 
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Default;
+import be.cvandenhauwe.aree.configuration.AreeArguments;
 import org.dom4j.Element;
 
 /**
@@ -16,13 +15,13 @@ import org.dom4j.Element;
 public class MarkerInput implements AreeInput{
 
     @Override
-    public Object process(Object obj) throws Exception{
+    public Object process(AreeArguments runtimeArgs, Object obj) throws Exception{
         System.out.println(obj.toString() + " as a Marker received.");
         return "Marker["+obj+"]";
     }
 
     @Override
-    public void setup(Element setupArguments) {
+    public void setup(AreeArguments setupArguments) {
         //
     }
     

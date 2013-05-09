@@ -22,7 +22,7 @@ public class AreeBeanSpecification {
     private VersioningStrategy vStrategy;
     private String vStart;    //optional 
     
-    private Element setupArgs; //bean specific arguments, to be handled later
+    private AreeArguments setupArgs = new AreeArguments(); //bean specific arguments, to be handled later
 
     AreeBeanSpecification(AreeType areeType, Element element) throws InvalidDescriptorException {
         type = areeType;
@@ -35,7 +35,7 @@ public class AreeBeanSpecification {
         
         
         if(element.element("arguments").hasContent()){
-            setupArgs = element.element("arguments").element("setup");
+            setupArgs.addFromElement(element.element("arguments").element("setup"));
         }
     }
 
@@ -55,7 +55,7 @@ public class AreeBeanSpecification {
         return setupArgs != null;
     }
     
-    public Element getSetupArguments(){
+    public AreeArguments getSetupArguments(){
         return setupArgs;
     }
     

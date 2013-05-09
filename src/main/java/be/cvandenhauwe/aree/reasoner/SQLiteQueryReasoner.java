@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import org.dom4j.Element;
 import org.sqlite.SQLiteConfig;
 
 /**

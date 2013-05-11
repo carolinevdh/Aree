@@ -5,11 +5,9 @@
 package be.cvandenhauwe.aree;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
@@ -18,9 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.sf.json.JSON;
 import net.sf.json.JSONObject;
-import net.sf.json.groovy.JsonSlurper;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -52,13 +48,6 @@ public class Main {
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String jsonText = readAll(br);
             JSONObject json = JSONObject.fromObject(jsonText);
-//            
-//            String output;
-//            System.out.println("--Output from Server:--");
-//            while((output = br.readLine()) != null){
-//                System.out.println(output);
-//            }
-//            System.out.println("---------end-----------");
             
             System.out.println("Client: received configuration with id: " + json.get("id"));
             conn.disconnect();

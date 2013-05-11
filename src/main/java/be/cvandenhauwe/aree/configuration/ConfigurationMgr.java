@@ -18,6 +18,7 @@ import org.dom4j.Element;
  */
 public class ConfigurationMgr {
     private HashMap<Integer, AreeConfiguration> configurations = new HashMap<Integer, AreeConfiguration>();
+    private HashMap<String, AreeConfiguration> cachedConfigurations = new HashMap<String, AreeConfiguration>();
     private int lastKey;
     
     private static ConfigurationMgr singleton;
@@ -65,8 +66,10 @@ public class ConfigurationMgr {
         return configurations.get(i);
     }
 
-    public void addNewConfiguration(Integer key, AreeConfiguration setupConfiguration) {
-        if(configurations.containsKey(key)) System.err.println("Configuration Key already exists, configuration " + configurations.get(key) + " gets overwritten.");        
-        configurations.put(key, setupConfiguration);
+    public void addNewConfiguration(Integer key, AreeConfiguration config) {
+        if(configurations.containsKey(key)) System.err.println("Configuration Key already exists, configuration " + configurations.get(key) + " gets overwritten.");    
+//        if(config.isCacheable())
+//            cachedConfigurations.put(config.getCacheKey(), config);
+        configurations.put(key, config);
     }
 }

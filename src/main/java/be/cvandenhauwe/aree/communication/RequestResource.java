@@ -78,6 +78,5 @@ public class RequestResource {
             return Response.status(500).entity("{\"succes\": false, \"message\": \"Error: "+ ex.getMessage() +"\"").build();
         }
         return Response.status(201).entity(output.toString()).build();
-        //return Response.status(201).entity("{\"succes\": true, \"message\": \""+ output.toString() +"\"").build();
     }
 }

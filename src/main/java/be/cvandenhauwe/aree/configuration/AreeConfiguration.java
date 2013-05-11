@@ -116,4 +116,12 @@ public class AreeConfiguration {
         if(!setupArguments.isEmpty())  next.setup(setupArguments);
         return (T) next;
     }
+    
+//    public boolean isCacheable(){
+//        return !specAI.hasSetupArguments() && !specAR.hasSetupArguments() && !specAO.hasSetupArguments();
+//    }
+//
+//    public String getCacheKey() {
+//        return 
+//    }
 }

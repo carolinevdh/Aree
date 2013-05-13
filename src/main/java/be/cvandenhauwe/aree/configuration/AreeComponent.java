@@ -4,8 +4,6 @@
  */
 package be.cvandenhauwe.aree.configuration;
 
-import org.dom4j.Element;
-
 /**
  *
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>

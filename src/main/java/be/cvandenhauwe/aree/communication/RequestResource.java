@@ -66,7 +66,7 @@ public class RequestResource {
         
         System.out.println("Server received request: " + content);
         JSONObject json = JSONObject.fromObject(content);        
-        AreeConfiguration config = ConfigurationMgr.getConfigurationMgr().getConfiguration(json.getInt("id"));
+        AreeConfiguration config = ConfigurationMgr.getConfigurationMgr().getConfiguration(json.getInt("key"));
         try {
             if(!json.containsKey("args")) System.out.println("Server: no runtime arguments specified" );
             config.refresh(injConfiguration);

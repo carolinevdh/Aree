@@ -10,7 +10,6 @@ import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
@@ -29,8 +28,6 @@ import org.dom4j.Element;
 @RequestScoped
 public class NewConfigurationResource {
 
-    @Context
-    private UriInfo context;
     
     @Inject
     private AreeConfiguration injConfig;
@@ -63,7 +60,7 @@ public class NewConfigurationResource {
             ConfigurationMgr.getConfigurationMgr().addNewConfiguration(config.getKey(), config);
             
             //response = "{success: true, id: " + config.getKey() + "}";
-            return Response.status(201).entity("{\"success\": true, \"id\": " + config.getKey() + "}").build();
+            return Response.status(201).entity("{\"success\": true, \"key\": " + config.getKey() + "}").build();
         } catch (InvalidDescriptorException ex) {
             //response = "{success: false, message: Your descriptor is invalid. " + ex.getMessage() + "}";
             return Response.status(500).entity("{\"success\": false, \"message\": \"Your descriptor is invalid. " + ex.getMessage() + "\"}").build();

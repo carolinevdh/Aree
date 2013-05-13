@@ -6,9 +6,7 @@ package be.cvandenhauwe.aree.configuration;
 
 import java.util.HashMap;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
-import be.cvandenhauwe.aree.versioning.VersioningStrategy;
 import javax.enterprise.inject.New;
-import javax.inject.Inject;
 import javax.ws.rs.Produces;
 import org.dom4j.Element;
 
@@ -18,7 +16,6 @@ import org.dom4j.Element;
  */
 public class ConfigurationMgr {
     private HashMap<Integer, AreeConfiguration> configurations = new HashMap<Integer, AreeConfiguration>();
-    private HashMap<String, AreeConfiguration> cachedConfigurations = new HashMap<String, AreeConfiguration>();
     private int lastKey;
     
     private static ConfigurationMgr singleton;
@@ -42,8 +39,7 @@ public class ConfigurationMgr {
         Element inputEl = el.element("input");
         Element reasonerEl = el.element("reasoner");
         Element outputEl = el.element("output");
-        
-        //AreeConfiguration cfg = new AreeConfiguration(key, inputEl, reasonerEl, outputEl); 
+         
         config.setup(key, inputEl, reasonerEl, outputEl);
         configurations.put(key, config);
     }
@@ -68,8 +64,6 @@ public class ConfigurationMgr {
 
     public void addNewConfiguration(Integer key, AreeConfiguration config) {
         if(configurations.containsKey(key)) System.err.println("Configuration Key already exists, configuration " + configurations.get(key) + " gets overwritten.");    
-//        if(config.isCacheable())
-//            cachedConfigurations.put(config.getCacheKey(), config);
         configurations.put(key, config);
     }
 }

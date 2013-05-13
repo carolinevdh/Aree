@@ -9,6 +9,7 @@ import be.cvandenhauwe.aree.output.AreeOutput;
 import be.cvandenhauwe.aree.reasoner.AreeReasoner;
 import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
@@ -24,20 +25,20 @@ import org.dom4j.Element;
 public class AreeConfiguration {
     
     @Inject
-    private Instance<AreeInput> ais;
-    private AreeInput ai;
+    private Instance<AreeInput> iInstances;
+    private ArrayList<AreeInput> iChain;
     
     @Inject
-    private Instance<AreeReasoner> ars;
-    private AreeReasoner ar;
+    private Instance<AreeReasoner> rInstances;
+    private ArrayList<AreeReasoner> rChain;
     
     @Inject
-    private Instance<AreeOutput> aos;
-    private AreeOutput ao;
+    private Instance<AreeOutput> oInstances;
+    private ArrayList<AreeOutput> oChain;
     
-    private AreeBeanSpecification specAI, specAR, specAO;
+    private AreeComponentDescription iDesc, rDesc, oDesc;
     
-    private int id;
+    private int key;
     
     private boolean ready;
     
@@ -45,37 +46,58 @@ public class AreeConfiguration {
     }
     
     public void refresh(AreeConfiguration newConfig) throws ComponentNotFoundException, Exception{
-        System.out.println("Server: refreshing config " + id + ": ready? " + ready + ", injected? " + newConfig);
+        System.out.println("Server: refreshing config " + key + ": ready? " + ready + ", injected? " + newConfig);
         if(ready){
-                if(!specAI.isPreferred(ai.getClass().getCanonicalName()))
-                    ai = chooseComponent(newConfig.ais, specAI, "input");
-                if(!specAR.isPreferred(ar.getClass().getCanonicalName()))
-                    ar = chooseComponent(newConfig.ars, specAR, "reasoner");
-                if(!specAO.isPreferred(ao.getClass().getCanonicalName()))
-                    ao = chooseComponent(newConfig.aos, specAO, "output");
+                if(!iDesc.isPreferredChain())
+                    iChain = chooseComponent(newConfig.iInstances, iDesc, "input");
+                if(!rDesc.isPreferredChain())
+                    rChain = chooseComponent(newConfig.rInstances, rDesc, "reasoner");
+                if(!oDesc.isPreferredChain())
+                    oChain = chooseComponent(newConfig.oInstances, oDesc, "output");
         }else{
-            ai = chooseComponent(newConfig.ais, specAI, "input");
-            ar = chooseComponent(newConfig.ars, specAR, "reasoner");
-            ao = chooseComponent(newConfig.aos, specAO, "output");
+            iChain = chooseComponent(newConfig.iInstances, iDesc, "input");
+            rChain = chooseComponent(newConfig.rInstances, rDesc, "reasoner");
+            oChain = chooseComponent(newConfig.oInstances, oDesc, "output");
         }
     }
     
-    public <T extends AreeComponent> T chooseComponent(Instance<T> instances, AreeBeanSpecification spec, String type) throws ComponentNotFoundException, Exception {
-        System.out.println("Server: choosing " + type + "-type component out of " + spec.size() + " prefered.");
-        for(int i = 0; i < spec.size(); i++){
-            System.out.println("Server: looking for a match to " + spec.getClassName(i));
+    public <T extends AreeComponent> ArrayList<T> chooseComponent(Instance<T> instances, AreeComponentDescription spec, String type) throws ComponentNotFoundException, Exception {
+        System.out.println("Server: choosing " + type + "-type component chain out of " + spec.size() + " prefered.");
+        ArrayList<T> list = new ArrayList<T>();
+        spec.setCurrentChain(-1);
+        
+        
+        //For all possible chains
+        for(int i = 0; i < spec.size(); i++){ //for all possible chains
+            System.out.println("Server: looking for a match to " + spec.getChain(i));
             Iterator it = instances.iterator();
+            
+            
+            int nLinks = spec.getChain(i).size();
+            int linksFound = 0;
+            
+            //For all found beans
             while(it.hasNext()){
                 Object next = it.next();
-                String cls = next.getClass().getCanonicalName();
-                System.out.println(cls);
-                if(cls.equalsIgnoreCase(spec.getClassName(i))){
-                    System.out.println("chosen: " + next.getClass().getCanonicalName());
-                    //return (T) next;
-                    if(spec.hasSetupArguments())
-                        return setupComponentWithArguments((T) next, spec.getSetupArguments());
-                    else
-                        return (T) next;
+                String beanName = next.getClass().getCanonicalName();
+                System.out.println("?" + beanName);
+                
+                //For every link in this chain
+                for(int j = 0; j < nLinks; j++){
+                    AreeLink link = spec.getChain(i).get(i);
+                    
+                    //check whether the bean matches the link
+                    if(beanName.equalsIgnoreCase(link.getName())){
+                        System.out.println("chosen: " + beanName);
+                        list.add(setupComponent((T) next, link.getSetupArguments()));
+                        linksFound++;
+                    }
+                    
+                    //if all links in this chain have been found, the chain is complete and the search is done
+                    if(linksFound == nLinks){
+                        spec.setCurrentChain(i);
+                        return list;
+                    }
                 }
             }
             System.out.println("Server: out of instances.");
@@ -84,44 +106,36 @@ public class AreeConfiguration {
         throw new ComponentNotFoundException("No Input could be found.");
     }
 
-    public AreeInput getInput() {
-        return ai;
+    public ArrayList<AreeInput> getInputChain() {
+        return iChain;
     }
 
-    public AreeReasoner getReasoner() {
-        return ar;
+    public ArrayList<AreeReasoner> getReasonerChain() {
+        return rChain;
     }
 
-    public AreeOutput getOutput() {
-        return ao;
+    public ArrayList<AreeOutput> getOutputChain() {
+        return oChain;
     }
     
     public Integer getKey(){
-        return id;
+        return key;
     }
     
 
     public void setup(int key, Element inputEl, Element reasonerEl, Element outputEl) throws InvalidDescriptorException {
              
-        id = key;        
+        this.key = key;        
           
-        specAI = new AreeBeanSpecification(AreeType.INPUT, inputEl);
-        specAR = new AreeBeanSpecification(AreeType.REASONER, reasonerEl);
-        specAO = new AreeBeanSpecification(AreeType.OUTPUT, outputEl); 
+        iDesc = new AreeComponentDescription(AreeType.INPUT, inputEl);
+        rDesc = new AreeComponentDescription(AreeType.REASONER, reasonerEl);
+        oDesc = new AreeComponentDescription(AreeType.OUTPUT, outputEl); 
         
-        System.out.println("Server: setup AreeConfiguration " + key + ": " + specAI + specAR + specAO);
+        System.out.println("Server: setup AreeConfiguration " + key + ": " + iDesc + rDesc + oDesc);
     }    
-
-    private <T extends AreeComponent> T setupComponentWithArguments(AreeComponent next, AreeArguments setupArguments) throws Exception {
+    
+    private <T extends Object & AreeComponent> T setupComponent(T next, AreeArguments setupArguments) throws Exception {
         if(!setupArguments.isEmpty())  next.setup(setupArguments);
         return (T) next;
     }
-    
-//    public boolean isCacheable(){
-//        return !specAI.hasSetupArguments() && !specAR.hasSetupArguments() && !specAO.hasSetupArguments();
-//    }
-//
-//    public String getCacheKey() {
-//        return 
-//    }
 }

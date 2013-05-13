@@ -5,6 +5,9 @@
 package be.cvandenhauwe.aree.configuration;
 
 import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
+import be.cvandenhauwe.aree.input.AreeInput;
+import be.cvandenhauwe.aree.output.AreeOutput;
+import be.cvandenhauwe.aree.reasoner.AreeReasoner;
 
 /**
  *
@@ -13,13 +16,15 @@ import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
 public class AreeReferee {
     
     public static Object process(AreeConfiguration configuration, AreeArguments runtimeArguments, Object data) throws ComponentNotFoundException, Exception {
-        //input
-        Object inputDone = configuration.getInput().process(runtimeArguments, data);
-        
-        //reasoner        
-        Object reasonerDone = configuration.getReasoner().process(runtimeArguments, inputDone);
+        //inputs
+        for(AreeInput input : configuration.getInputChain()) data = input.process(runtimeArguments, data);
+                      
+        //reasoners
+        for(AreeReasoner reasoner : configuration.getReasonerChain()) data = reasoner.process(runtimeArguments, data);
         
         //output
-        return configuration.getOutput().process(runtimeArguments, reasonerDone);
+        for(AreeOutput output : configuration.getOutputChain()) data = output.process(runtimeArguments, data);
+        
+        return data;
     }
 }

@@ -11,6 +11,7 @@ import be.cvandenhauwe.aree.reasoner.AreeReasoner;
 import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
 import be.cvandenhauwe.aree.output.ResultSettoJSONOutput;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -51,8 +52,9 @@ public class AreeConfiguration {
     public String refreshURLClassLoader() {
         try {
             AreeClassLoader areeloader = new AreeClassLoader(this.getClass().getClassLoader());
-            
-            Class reasonerClass = areeloader.loadClass("com.johndoe.areesqlitetools.SQLiteReadOnlyReasoner");
+            URL[] urls = new URL[1];
+            urls[0] = new URL("file:///Users/caroline/Thesis/Code/AreeSQLiteTools/target/AreeSQLiteTools-1.0-SNAPSHOT.jar");
+            Class reasonerClass = areeloader.loadClass(urls, "com.johndoe.areesqlitetools.SQLiteReadOnlyReasoner");
             
             AreeReasoner reasoner = (AreeReasoner) reasonerClass.newInstance();
             

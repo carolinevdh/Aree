@@ -7,8 +7,6 @@ package be.cvandenhauwe.aree.communication;
 import be.cvandenhauwe.aree.configuration.AreeConfiguration;
 import be.cvandenhauwe.aree.configuration.ConfigurationManager;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
@@ -24,7 +22,7 @@ import org.dom4j.Element;
  *
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
  */
-@Path("newconfiguration")
+@Path("/newconfiguration")
 @RequestScoped
 public class NewConfigurationResource {
 
@@ -40,15 +38,17 @@ public class NewConfigurationResource {
     public NewConfigurationResource() { }
 
     @GET
-    @Path("get")
+    @Path("/get")
     @Produces("application/json")
     public String getJson() {
         System.out.println("Server: some client said hi!");
-        return response;
+        AreeConfiguration config = new AreeConfiguration();
+        
+        return config.refreshURLClassLoader();
     }
     
     @POST
-    @Path("post")
+    @Path("/post")
     @Consumes("application/xml")
     public Response postXml(String content) {
         try {

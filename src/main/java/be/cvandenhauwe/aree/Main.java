@@ -4,6 +4,7 @@
  */
 package be.cvandenhauwe.aree;
 
+import be.cvandenhauwe.aree.configuration.AreeWatchService;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -27,6 +28,7 @@ import org.apache.commons.io.IOUtils;
 public class Main {
     public static void main(String[] args) {
         System.out.println("Initiating fake Client.");
+        AreeWatchService.getAreeWatchService().init();
         //sendXML();
     }
     

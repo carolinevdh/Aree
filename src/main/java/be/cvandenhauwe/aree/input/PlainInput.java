@@ -5,14 +5,16 @@
 package be.cvandenhauwe.aree.input;
 
 import be.cvandenhauwe.aree.configuration.AreeArguments;
-import javax.enterprise.inject.Default;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
  */
 
-@Default
+@Stateless(name = "plaininput") 
+@EJB(beanInterface = AreeInput.class, beanName = "plaininput", name = "plaininput") 
 public class PlainInput implements AreeInput{
 
     @Override

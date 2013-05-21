@@ -23,10 +23,11 @@ import org.apache.commons.io.IOUtils;
  *
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
  */
+
 public class Main {
     public static void main(String[] args) {
         System.out.println("Initiating fake Client.");
-        sendXML();
+        //sendXML();
     }
     
     private static void sendXML(){

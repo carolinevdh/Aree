@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Aree Descriptor file -->
+<descriptor>
+	<configuration action="new">
+		<input>
+			<chain>
+				<link>
+					<class>be.cvandenhauwe.aree.input.PlainInput</class>
+					<version strategy="DESC"></version>
+					<arguments/>
+				</link>
+			</chain>
+		</input>	
+		<reasoner>
+			<chain>
+				<link>
+					<class>com.johndoe.areesqlitetools.SQLiteReadOnlyReasoner</class>
+					<version strategy="DESC"></version>
+					<arguments>
+						<setup>
+							<getfile key="dbname">Chemistry</dbname>
+						</setup>
+					</arguments>				
+				</link>
+			</chain>
+		</reasoner>
+		<output>
+			<chain>
+				<link>
+					<class>be.cvandenhauwe.aree.output.ResultSettoJSONOutput</class>
+					<version strategy="DESC"></version>
+					<arguments/>				
+				</link>
+			</chain>
+		</output>		
+	</configuration>
+</descriptor>

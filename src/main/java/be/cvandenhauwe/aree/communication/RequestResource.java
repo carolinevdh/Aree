@@ -7,13 +7,11 @@ package be.cvandenhauwe.aree.communication;
 import be.cvandenhauwe.aree.configuration.AreeArguments;
 import be.cvandenhauwe.aree.configuration.AreeConfiguration;
 import be.cvandenhauwe.aree.configuration.AreeReferee;
-import be.cvandenhauwe.aree.configuration.ConfigurationMgr;
-import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
+import be.cvandenhauwe.aree.configuration.ConfigurationManager;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -44,19 +42,6 @@ public class RequestResource {
      */
     public RequestResource() {
     }
-
-    /**
-     * Retrieves representation of an instance of be.cvandenhauwe.aree.communication.RequestResource
-     * @return an instance of java.lang.String
-     */
-    @GET
-    @Path("get")
-    @Produces("application/json")
-    public String getJson() {
-        //TODO return proper representation object
-        throw new UnsupportedOperationException();
-    }
-
     
     @POST
     @Path("post")
@@ -66,15 +51,17 @@ public class RequestResource {
         
         System.out.println("Server received request: " + content);
         JSONObject json = JSONObject.fromObject(content);        
-        AreeConfiguration config = ConfigurationMgr.getConfigurationMgr().getConfiguration(json.getInt("key"));
+        AreeConfiguration config = ConfigurationManager.getConfigurationMgr().getConfiguration(json.getInt("key"));
         try {
             if(!json.containsKey("args")) System.out.println("Server: no runtime arguments specified" );
-            config.refresh(injConfiguration);
-            output = AreeReferee.process(
-                    config, AreeArguments.getArgumentsFromJSON(json.getJSONObject("args")), json.get("data"));
+            //config.refreshCDI(injConfiguration);
+            //config.refreshEJB();
+            output = config.refreshURLClassLoader();
+            //            output = AreeReferee.process(
+//                    config, AreeArguments.getArgumentsFromJSON(json.getJSONObject("args")), json.get("data"));
             System.out.println("Server: success, generating output: " + output);
         } catch (Exception ex) {
-            System.out.println("Server: Exception, " + ex.getMessage());
+            System.out.println("Server: Exception " + ex.getClass().getName() + ": " + ex.getMessage());
             return Response.status(500).entity("{\"succes\": false, \"message\": \"Error: "+ ex.getMessage() +"\"").build();
         }
         return Response.status(201).entity(output.toString()).build();

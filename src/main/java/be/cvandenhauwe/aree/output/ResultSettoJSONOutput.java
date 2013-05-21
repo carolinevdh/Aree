@@ -8,15 +8,18 @@ import be.cvandenhauwe.aree.configuration.AreeArguments;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.dom4j.Element;
 
 /**
  *
  * @author caroline
  */
+//@Stateless(name = "resultsettojsonoutput")
+//@EJB(beanInterface = AreeOutput.class, beanName = "resultsettojsonoutput", name = "resultsettojsonoutput") 
 public class ResultSettoJSONOutput implements AreeOutput{
     
     @Override

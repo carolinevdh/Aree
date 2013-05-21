@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcl-context>
+<!--    <jcl name="jcl1">
+        <loaders>
+            <loader name="jcl.parent">
+                <order>3</order>
+                <enabled>true</enabled>
+            </loader>
+            <loader name="jcl.local">
+                <order>1</order>
+                <enabled>true</enabled>
+            </loader>
+            <loader name="jcl.current">
+                <enabled>false</enabled>
+            </loader>
+            <loader name="jcl.thread">
+                <enabled>true</enabled>
+            </loader>
+            <loader name="jcl.system">
+                <enabled>true</enabled>
+            </loader>
+            <loader name="jcl.bootosgi">
+                <enabled>true</enabled>
+                <strict>true</strict>
+                <bootDelegation>mypack.system.*</bootDelegation>
+            </loader>
+            <loader name="custom" class="mypack.MyLoader">
+                <order>2</order>
+                <enabled>true</enabled>
+            </loader>
+        </loaders>
+        <sources>
+            <source>webapp:WEB-INF/lib/AreeSQLiteTools-1.0-SNAPSHOT.jar</source>
+        </sources>
+    </jcl>-->
+    <jcl name="jcl2">
+        <sources>
+            <source>webapp:WEB-INF/lib/AreeSQLiteTools-1.0-SNAPSHOT.jar</source>
+        </sources>
+    </jcl>
+</jcl-context>

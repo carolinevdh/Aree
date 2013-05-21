@@ -5,7 +5,7 @@
 package be.cvandenhauwe.aree.communication;
 
 import be.cvandenhauwe.aree.configuration.AreeConfiguration;
-import be.cvandenhauwe.aree.configuration.ConfigurationMgr;
+import be.cvandenhauwe.aree.configuration.ConfigurationManager;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -57,7 +57,7 @@ public class NewConfigurationResource {
             System.out.println("--------------end---------------");
            
             AreeConfiguration config = parseXMLToConfiguration(content, injConfig);
-            ConfigurationMgr.getConfigurationMgr().addNewConfiguration(config.getKey(), config);
+            ConfigurationManager.getConfigurationMgr().addNewConfiguration(config.getKey(), config);
             
             //response = "{success: true, id: " + config.getKey() + "}";
             return Response.status(201).entity("{\"success\": true, \"key\": " + config.getKey() + "}").build();
@@ -74,7 +74,7 @@ public class NewConfigurationResource {
         if(!config.attributeValue("action").equals("new")) 
             throw new InvalidDescriptorException("Error: Asking new configuration service for " + config.attributeValue("action") + " configuration.");
                 
-        int key = ConfigurationMgr.getConfigurationMgr().getUniqueKey();
+        int key = ConfigurationManager.getConfigurationMgr().getUniqueKey();
         c.setup(key, config.element("input"), config.element("reasoner"), config.element("output"));
         
         return c;

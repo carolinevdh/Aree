@@ -4,13 +4,17 @@
  */
 package be.cvandenhauwe.aree.configuration;
 
+import be.cvandenhauwe.aree.communication.AreeProperties;
 import be.cvandenhauwe.aree.input.AreeInput;
 import be.cvandenhauwe.aree.output.AreeOutput;
 import be.cvandenhauwe.aree.reasoner.AreeReasoner;
 import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
+import be.cvandenhauwe.aree.output.ResultSettoJSONOutput;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -20,60 +24,91 @@ import org.dom4j.Element;
  *
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
  */
-
+//@Singleton //bij gebruik van EJB3
 @Default
 public class AreeConfiguration {
     
     @Inject
     private Instance<AreeInput> iInstances;
-    private ArrayList<AreeInput> iChain;
+    private ArrayList<AreeInput> iCCC;
     
     @Inject
     private Instance<AreeReasoner> rInstances;
-    private ArrayList<AreeReasoner> rChain;
+    private ArrayList<AreeReasoner> rCCC;
     
     @Inject
     private Instance<AreeOutput> oInstances;
-    private ArrayList<AreeOutput> oChain;
+    private ArrayList<AreeOutput> oCCC;
     
-    private AreeComponentDescription iDesc, rDesc, oDesc;
+    private AreeComponentChainCollection iDesc, rDesc, oDesc;
     
     private int key;
     
     private boolean ready;
     
-    public AreeConfiguration(){    
-    }
+    public AreeConfiguration(){}
     
-    public void refresh(AreeConfiguration newConfig) throws ComponentNotFoundException, Exception{
+    public String refreshURLClassLoader() {
+        try {
+            AreeClassLoader areeloader = new AreeClassLoader(this.getClass().getClassLoader());
+            
+            Class reasonerClass = areeloader.loadClass("com.johndoe.areesqlitetools.SQLiteReadOnlyReasoner");
+            
+            AreeReasoner reasoner = (AreeReasoner) reasonerClass.newInstance();
+            
+            AreeArguments setupArgs = new AreeArguments();
+            setupArgs.put("dbpath",AreeProperties.getFilesPath() + "Chemistry.db");
+            reasoner.setup(setupArgs);
+            
+            Object reasonerOut = reasoner.process(new AreeArguments(), "select identifier from molecules");
+            
+            
+            
+            AreeOutput output = (AreeOutput) new ResultSettoJSONOutput();
+            
+            return output.process(new AreeArguments(), reasonerOut).toString();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AreeConfiguration.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(AreeConfiguration.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(AreeConfiguration.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(AreeConfiguration.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    } 
+    
+    //Original CDI method, does not detect hot swapped jars
+    public void refreshCDI(AreeConfiguration newConfig) throws ComponentNotFoundException, Exception{
         System.out.println("Server: refreshing config " + key + ": ready? " + ready + ", injected? " + newConfig);
         if(ready){
-                if(!iDesc.isPreferredChain())
-                    iChain = chooseComponent(newConfig.iInstances, iDesc, "input");
-                if(!rDesc.isPreferredChain())
-                    rChain = chooseComponent(newConfig.rInstances, rDesc, "reasoner");
-                if(!oDesc.isPreferredChain())
-                    oChain = chooseComponent(newConfig.oInstances, oDesc, "output");
+                if(!iDesc.currentIsPreferred())
+                    iCCC = chooseComponentCDI(newConfig.iInstances, iDesc, "input");
+                if(!rDesc.currentIsPreferred())
+                    rCCC = chooseComponentCDI(newConfig.rInstances, rDesc, "reasoner");
+                if(!oDesc.currentIsPreferred())
+                    oCCC = chooseComponentCDI(newConfig.oInstances, oDesc, "output");
         }else{
-            iChain = chooseComponent(newConfig.iInstances, iDesc, "input");
-            rChain = chooseComponent(newConfig.rInstances, rDesc, "reasoner");
-            oChain = chooseComponent(newConfig.oInstances, oDesc, "output");
+            iCCC = chooseComponentCDI(newConfig.iInstances, iDesc, "input");
+            rCCC = chooseComponentCDI(newConfig.rInstances, rDesc, "reasoner");
+            oCCC = chooseComponentCDI(newConfig.oInstances, oDesc, "output");
         }
     }
     
-    public <T extends AreeComponent> ArrayList<T> chooseComponent(Instance<T> instances, AreeComponentDescription spec, String type) throws ComponentNotFoundException, Exception {
-        System.out.println("Server: choosing " + type + "-type component chain out of " + spec.size() + " prefered.");
+    public <T extends AreeComponentInterface> ArrayList<T> chooseComponentCDI(Instance<T> instances, AreeComponentChainCollection ccc, String type) throws ComponentNotFoundException, Exception {
+        System.out.println("Server: choosing " + type + "-type component chain out of " + ccc.size() + " prefered.");
         ArrayList<T> list = new ArrayList<T>();
-        spec.setCurrentChain(-1);
+        ccc.setCurrent(-1);
         
         
         //For all possible chains
-        for(int i = 0; i < spec.size(); i++){ //for all possible chains
-            System.out.println("Server: looking for a match to " + spec.getChain(i));
+        for(int i = 0; i < ccc.size(); i++){ //for all possible chains
+            System.out.println("Server: looking for a match to " + ccc.get(i));
             Iterator it = instances.iterator();
             
             
-            int nLinks = spec.getChain(i).size();
+            int nLinks = ccc.get(i).size();
             int linksFound = 0;
             
             //For all found beans
@@ -84,7 +119,7 @@ public class AreeConfiguration {
                 
                 //For every link in this chain
                 for(int j = 0; j < nLinks; j++){
-                    AreeLink link = spec.getChain(i).get(i);
+                    AreeComponent link = ccc.get(i).get(i);
                     
                     //check whether the bean matches the link
                     if(beanName.equalsIgnoreCase(link.getName())){
@@ -95,7 +130,7 @@ public class AreeConfiguration {
                     
                     //if all links in this chain have been found, the chain is complete and the search is done
                     if(linksFound == nLinks){
-                        spec.setCurrentChain(i);
+                        ccc.setCurrent(i);
                         return list;
                     }
                 }
@@ -107,15 +142,15 @@ public class AreeConfiguration {
     }
 
     public ArrayList<AreeInput> getInputChain() {
-        return iChain;
+        return iCCC;
     }
 
     public ArrayList<AreeReasoner> getReasonerChain() {
-        return rChain;
+        return rCCC;
     }
 
     public ArrayList<AreeOutput> getOutputChain() {
-        return oChain;
+        return oCCC;
     }
     
     public Integer getKey(){
@@ -127,14 +162,14 @@ public class AreeConfiguration {
              
         this.key = key;        
           
-        iDesc = new AreeComponentDescription(AreeType.INPUT, inputEl);
-        rDesc = new AreeComponentDescription(AreeType.REASONER, reasonerEl);
-        oDesc = new AreeComponentDescription(AreeType.OUTPUT, outputEl); 
+        iDesc = new AreeComponentChainCollection(AreeType.INPUT, inputEl);
+        rDesc = new AreeComponentChainCollection(AreeType.REASONER, reasonerEl);
+        oDesc = new AreeComponentChainCollection(AreeType.OUTPUT, outputEl); 
         
         System.out.println("Server: setup AreeConfiguration " + key + ": " + iDesc + rDesc + oDesc);
     }    
     
-    private <T extends Object & AreeComponent> T setupComponent(T next, AreeArguments setupArguments) throws Exception {
+    private <T extends Object & AreeComponentInterface> T setupComponent(T next, AreeArguments setupArguments) throws Exception {
         if(!setupArguments.isEmpty())  next.setup(setupArguments);
         return (T) next;
     }

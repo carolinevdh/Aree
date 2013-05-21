@@ -5,8 +5,8 @@
 package be.cvandenhauwe.aree.communication;
 
 import be.cvandenhauwe.aree.configuration.AreeArguments;
-import be.cvandenhauwe.aree.configuration.AreeChain;
-import be.cvandenhauwe.aree.configuration.AreeLink;
+import be.cvandenhauwe.aree.configuration.AreeComponentChain;
+import be.cvandenhauwe.aree.configuration.AreeComponent;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
 import be.cvandenhauwe.aree.versioning.VersioningStrategy;
 import java.io.ByteArrayInputStream;
@@ -46,8 +46,8 @@ public class XMLParser {
         return list;
     }
     
-    public static ArrayList<AreeChain> elementToChainCollection(Element el){
-        ArrayList<AreeChain> chains = new ArrayList<AreeChain>();
+    public static ArrayList<AreeComponentChain> elementToChainCollection(Element el){
+        ArrayList<AreeComponentChain> chains = new ArrayList<AreeComponentChain>();
         Iterator it = el.elementIterator("chain");
         while(it.hasNext()){
             Element next = (Element) it.next();
@@ -57,8 +57,8 @@ public class XMLParser {
         return chains;
     }
     
-    public static AreeChain elementToChain(Element el){
-        AreeChain links = new AreeChain();
+    public static AreeComponentChain elementToChain(Element el){
+        AreeComponentChain links = new AreeComponentChain();
         Iterator it = el.elementIterator("link");
         while(it.hasNext()){
             Element next = (Element) it.next();
@@ -68,7 +68,7 @@ public class XMLParser {
         return links;
     }
     
-    public static AreeLink elementToLink(Element el){
+    public static AreeComponent elementToLink(Element el){
         String className = el.elementText("class");
         Element versionEl = el.element("version");
         VersioningStrategy versioning = VersioningStrategy.valueOf(versionEl.attributeValue("strategy"));
@@ -77,6 +77,6 @@ public class XMLParser {
         Element setupEl = el.element("arguments").element("setup");
         if(setupEl != null) arguments.addFromElement(setupEl);
         
-        return new AreeLink(className, versioning, version, arguments);
+        return new AreeComponent(className, versioning, version, arguments);
     }
 }

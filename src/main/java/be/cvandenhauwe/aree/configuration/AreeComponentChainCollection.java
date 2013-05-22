@@ -5,7 +5,9 @@
 package be.cvandenhauwe.aree.configuration;
 
 import be.cvandenhauwe.aree.communication.XMLParser;
+import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
+import be.cvandenhauwe.aree.loading.ComponentInjection;
 import java.util.ArrayList;
 import org.dom4j.Element;
 
@@ -14,28 +16,36 @@ import org.dom4j.Element;
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
  */
 public class AreeComponentChainCollection extends ArrayList<AreeComponentChain> {
-    private AreeType type;
-    private int pointer = 0;
+    private Class cl;
 
-    AreeComponentChainCollection(AreeType areeType, Element element) throws InvalidDescriptorException {
-        type = areeType;
-        this.addAll(XMLParser.elementToChainCollection(element));
-    } 
-    
-    public AreeComponentChain getCurrent(){
-        return get(pointer);
+    AreeComponentChainCollection(Class areeType, Element element) throws InvalidDescriptorException {
+        cl = areeType;
+        addAll(XMLParser.elementToComponentChainCollection(cl, element));
     }
     
-    public void setCurrent(int i) {
-        pointer = i;
-    }    
+    public AreeComponentChain getBestChain() throws ComponentNotFoundException{
+        for(AreeComponentChain cc : this) if(cc.isComplete()) return cc;
+        throw new ComponentNotFoundException("No valid (chain of) " + cl.getSimpleName() + " found." );
+    }
     
-    public boolean currentIsPreferred(){
-        return pointer == 0;
-    } 
+    public boolean isOptimal(){
+        return get(0).isComplete();
+    }
+    
+    public boolean isReady(){
+        for(AreeComponentChain cc : this) if(cc.isComplete()) return true;
+        return false;
+    }
     
     @Override
     public String toString(){        
-        return type.name() + ": " + super.toString();
+        return cl.getSimpleName() + ": " + super.toString();
+    }
+
+    public void refresh(ComponentInjection inj) {
+        for(AreeComponentChain cc : this){            
+            if(cc.isComplete()) break; //we need only 1 complete componentchain
+            if(cc.refresh(inj)) break;            
+        }
     }
 }

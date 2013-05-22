@@ -7,6 +7,7 @@ package be.cvandenhauwe.aree.communication;
 import be.cvandenhauwe.aree.configuration.AreeConfiguration;
 import be.cvandenhauwe.aree.configuration.ConfigurationManager;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
+import be.cvandenhauwe.aree.loading.ComponentInjection;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
@@ -15,7 +16,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.core.Response;
-import org.dom4j.Element;
+import net.sf.json.JSONObject;
 
 /**
  * REST Web Service
@@ -26,12 +27,12 @@ import org.dom4j.Element;
 @RequestScoped
 public class NewConfigurationResource {
 
+    private static final String HELLO = "{msg: 'Welcome to Aree'}";
+    private static final String KEY = "key";
+    private static final String ERROR = "error";
+    private static final String SUCCESS = "success";
+  
     
-    @Inject
-    private AreeConfiguration injConfig;
-    
-    String response = "{msg: 'Welcome to Aree'}";
-
     /**
      * Creates a new instance of NewConfigurationResource
      */
@@ -41,42 +42,33 @@ public class NewConfigurationResource {
     @Path("/get")
     @Produces("application/json")
     public String getJson() {
-        System.out.println("Server: some client said hi!");
-        AreeConfiguration config = new AreeConfiguration();
-        
-        return config.refreshURLClassLoader();
+        System.out.println("Server: some client said hi!");        
+        return HELLO;
     }
     
     @POST
     @Path("/post")
     @Consumes("application/xml")
     public Response postXml(String content) {
+        JSONObject outjson = new JSONObject();
+        
         try {
             System.out.println("Server: received new configuration from client: ---");
             System.out.println(content);
             System.out.println("--------------end---------------");
            
-            AreeConfiguration config = parseXMLToConfiguration(content, injConfig);
+            AreeConfiguration config = XMLParser.descriptorToConfiguration(content);
             ConfigurationManager.getConfigurationMgr().addNewConfiguration(config.getKey(), config);
             
-            //response = "{success: true, id: " + config.getKey() + "}";
-            return Response.status(201).entity("{\"success\": true, \"key\": " + config.getKey() + "}").build();
+            outjson.accumulate(SUCCESS, true);
+            outjson.accumulate(KEY, config.getKey());           
+            return Response.status(201).entity(outjson.toString()).build();
         } catch (InvalidDescriptorException ex) {
-            //response = "{success: false, message: Your descriptor is invalid. " + ex.getMessage() + "}";
-            return Response.status(500).entity("{\"success\": false, \"message\": \"Your descriptor is invalid. " + ex.getMessage() + "\"}").build();
+            outjson.accumulate(SUCCESS, false);
+            outjson.accumulate(ERROR, ex.getMessage());           
+            return Response.status(201).entity(outjson.toString()).build();
         }
     }
     
-    public AreeConfiguration parseXMLToConfiguration(String xml, AreeConfiguration c) throws InvalidDescriptorException{
-        
-        Element root = XMLParser.xmlToRootElement(xml);
-        Element config = root.element("configuration");
-        if(!config.attributeValue("action").equals("new")) 
-            throw new InvalidDescriptorException("Error: Asking new configuration service for " + config.attributeValue("action") + " configuration.");
-                
-        int key = ConfigurationManager.getConfigurationMgr().getUniqueKey();
-        c.setup(key, config.element("input"), config.element("reasoner"), config.element("output"));
-        
-        return c;
-    }
+    
 }

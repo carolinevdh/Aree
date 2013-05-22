@@ -1,5 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context aliases="/files=../Aree-files,/Components=../Aree-components" antiJARLocking="true" path="/Aree">
-  <Loader className="org.apache.catalina.loader.VirtualWebappLoader" virtualClasspath="/usr/local/apache-tomee-plus-1.6.0-SNAPSHOT/Aree-components/*.jar"/>
-  <!--<Environment description="Absolute Path to Files folder" name="AREE_FILES" override="false" type="java.lang.String" value="/usr/local/apache-tomee-plus-1.5.2/Aree-files/"/>-->
-</Context>
+<Context antiJARLocking="true" path="/Aree" />

@@ -8,15 +8,13 @@ import be.cvandenhauwe.aree.configuration.AreeArguments;
 import be.cvandenhauwe.aree.configuration.AreeConfiguration;
 import be.cvandenhauwe.aree.configuration.AreeReferee;
 import be.cvandenhauwe.aree.configuration.ConfigurationManager;
+import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
+import be.cvandenhauwe.aree.loading.ComponentInjection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.GET;
-import javax.ws.rs.Produces;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
@@ -30,12 +28,16 @@ import net.sf.json.JSONObject;
 @Path("request")
 @RequestScoped
 public class RequestResource {
-
-    @Context
-    private UriInfo context;
-
+    
+    private static final String KEY = "key";
+    private static final String INPUT = "data";   
+    private static final String SUCCESS = "success";
+    private static final String ERROR = "error";
+    private static final String RETURN = "return";
+    private static final String ARGS = "args";
+    
     @Inject
-    private AreeConfiguration injConfiguration;
+    private ComponentInjection inj;
     
     /**
      * Creates a new instance of RequestResource
@@ -47,23 +49,49 @@ public class RequestResource {
     @Path("post")
     @Consumes("application/json")
     public Response postJson(String content) {
-        Object output = new Object();
-        
         System.out.println("Server received request: " + content);
-        JSONObject json = JSONObject.fromObject(content);        
-        AreeConfiguration config = ConfigurationManager.getConfigurationMgr().getConfiguration(json.getInt("key"));
-        try {
-            if(!json.containsKey("args")) System.out.println("Server: no runtime arguments specified" );
-            //config.refreshCDI(injConfiguration);
-            //config.refreshEJB();
-            output = config.refreshURLClassLoader();
-            //            output = AreeReferee.process(
-//                    config, AreeArguments.getArgumentsFromJSON(json.getJSONObject("args")), json.get("data"));
-            System.out.println("Server: success, generating output: " + output);
-        } catch (Exception ex) {
-            System.out.println("Server: Exception " + ex.getClass().getName() + ": " + ex.getMessage());
-            return Response.status(500).entity("{\"succes\": false, \"message\": \"Error: "+ ex.getMessage() +"\"").build();
+        
+        Object output = new Object();
+        JSONObject outjson = new JSONObject();
+        JSONObject injson = JSONObject.fromObject(content);
+        
+        //a 'key' is vital
+        if(!injson.containsKey(KEY)){
+            outjson.accumulate(SUCCESS, false);
+            outjson.accumulate(ERROR, "'key' missing in request.");
+            return Response.status(Response.Status.BAD_REQUEST).entity(outjson.toString()).build();
         }
-        return Response.status(201).entity(output.toString()).build();
+        
+        //'data' is vital
+        if(!injson.containsKey(INPUT)){
+            outjson.accumulate(SUCCESS, false);
+            outjson.accumulate(ERROR, "'" + INPUT + "' missing in request.");
+            return Response.status(Response.Status.BAD_REQUEST).entity(outjson.toString()).build();
+        }
+        
+        //check for and load arguments
+        AreeArguments runtimeArgs = new AreeArguments();
+        if(injson.containsKey("arguments")) runtimeArgs.addFromJSON(injson.getJSONObject(ARGS));
+        
+        //fetch configuration, refresh and process 'data'
+        AreeConfiguration config = ConfigurationManager.getConfigurationMgr().getConfiguration(injson.getInt(KEY));
+        config.refresh(inj);
+        try {
+            output = AreeReferee.process(config, runtimeArgs, injson.get(INPUT));
+            
+        //return findings to client
+        } catch (ComponentNotFoundException ex) {
+            Logger.getLogger(RequestResource.class.getName()).log(Level.SEVERE, null, ex);
+            outjson.accumulate(SUCCESS, false);
+            outjson.accumulate(RETURN, ex.getMessage());
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(outjson.toString()).build();
+        } catch (Exception ex) {
+            Logger.getLogger(RequestResource.class.getName()).log(Level.SEVERE, null, ex);
+            outjson.accumulate(SUCCESS, false);
+            outjson.accumulate(RETURN, "Component Exception: " + ex.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(outjson.toString()).build();
+        }
+        return Response.status(Response.Status.OK).entity(output.toString()).build();
+        
     }
 }

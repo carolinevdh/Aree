@@ -5,9 +5,6 @@
 package be.cvandenhauwe.aree.configuration;
 
 import java.util.HashMap;
-import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
-import javax.enterprise.inject.New;
-import javax.ws.rs.Produces;
 import org.dom4j.Element;
 
 /**
@@ -15,7 +12,7 @@ import org.dom4j.Element;
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
  */
 public class ConfigurationManager {
-    private HashMap<Integer, AreeConfiguration> configurations = new HashMap<Integer, AreeConfiguration>();
+    private HashMap<Integer, AreeConfiguration> configurations;
     private int lastKey;
     
     private static ConfigurationManager singleton;
@@ -28,20 +25,6 @@ public class ConfigurationManager {
     public static ConfigurationManager getConfigurationMgr(){
         if(singleton == null) singleton = new ConfigurationManager();
         return singleton;
-    }
-    
-    @Produces
-    public void parseNewConfiguration(@New AreeConfiguration config, Element el) throws InvalidDescriptorException {
-        if(!isValidConfiguration(el)) throw new InvalidDescriptorException();
-        
-        int key = getUniqueKey();
-        
-        Element inputEl = el.element("input");
-        Element reasonerEl = el.element("reasoner");
-        Element outputEl = el.element("output");
-         
-        config.setup(key, inputEl, reasonerEl, outputEl);
-        configurations.put(key, config);
     }
     
     public int getUniqueKey(){

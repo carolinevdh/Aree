@@ -4,7 +4,6 @@
  */
 package be.cvandenhauwe.aree.loading;
 
-import be.cvandenhauwe.aree.communication.AreeProperties;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.annotation.PostConstruct;
@@ -21,7 +20,8 @@ import javax.ejb.Startup;
 @Startup
 public class Initiator {
     
-    private static final Path PATH = Paths.get(AreeProperties.getComponentsPath());
+    //private static final Path PATH = Paths.get(AreeProperties.getAreeProperties().getComponentsPath());
+    private static final Path PATH = Paths.get("/Library/TomEEp/Aree-components/");
     
     @EJB
     private AreeWatchService watchService;
@@ -29,6 +29,7 @@ public class Initiator {
     @PostConstruct
     public void init() {
         System.out.println("Server: Initiator PostConstruct");
+        watchService.initialScan(PATH);
         watchService.poll(PATH,60);
     }
 }

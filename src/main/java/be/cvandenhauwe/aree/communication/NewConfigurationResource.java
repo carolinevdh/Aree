@@ -7,13 +7,10 @@ package be.cvandenhauwe.aree.communication;
 import be.cvandenhauwe.aree.configuration.AreeConfiguration;
 import be.cvandenhauwe.aree.configuration.ConfigurationManager;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
-import be.cvandenhauwe.aree.loading.ComponentInjection;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.core.Response;
 import net.sf.json.JSONObject;
@@ -32,7 +29,6 @@ public class NewConfigurationResource {
     private static final String ERROR = "error";
     private static final String SUCCESS = "success";
   
-    
     /**
      * Creates a new instance of NewConfigurationResource
      */
@@ -42,13 +38,14 @@ public class NewConfigurationResource {
     @Path("/get")
     @Produces("application/json")
     public String getJson() {
-        System.out.println("Server: some client said hi!");        
-        return HELLO;
+        JSONObject json = new JSONObject();
+        json.accumulate(SUCCESS, "true");
+        return json.toString();
     }
     
     @POST
     @Path("/post")
-    @Consumes("application/xml")
+    //@Consumes("application/xml")
     public Response postXml(String content) {
         JSONObject outjson = new JSONObject();
         

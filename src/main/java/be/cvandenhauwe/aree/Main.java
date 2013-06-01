@@ -25,9 +25,9 @@ import org.apache.commons.io.IOUtils;
  */
 
 public class Main {
+    
     public static void main(String[] args) {
-        System.out.println("Initiating fake Client.");
-        //sendXML();
+       
     }
     
     private static void sendXML(){

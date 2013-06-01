@@ -16,13 +16,16 @@ import java.util.logging.Logger;
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
  */
 public class AreeJarManager {
-    private static final String PATH = AreeProperties.getComponentsPath();
-    
+    private static String PATH;
+    //private static final String PATH = "/Library/TomEEp/Aree-components/";
     private static AreeJarManager singleton;    
     private final ArrayList<String> availableJars;
 
     private AreeJarManager(){
         availableJars = new ArrayList<String>();
+        
+        AreeProperties props = new AreeProperties();
+        PATH = props.getComponentsPath();
     }
     
     public static AreeJarManager getAreeJarManager(){
@@ -43,10 +46,20 @@ public class AreeJarManager {
         URL[] urls = new URL[size];     
         
         try {
-            for(int i = 0; i < size; i++)  urls[i] = new URL(PATH + availableJars.get(i));
+            for(int i = 0; i < size; i++) urls[i] = new URL("file://" + PATH + availableJars.get(i));
         } catch (MalformedURLException ex) {
             Logger.getLogger(AreeJarManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         return urls;
+    }
+    
+    @Override
+    public String toString(){        
+        int size = availableJars.size();
+        if(size == 0) return "nothing";
+        String str = availableJars.get(0);
+        for(int i = 1; i < size; i++) str = str + ", " + availableJars.get(i);
+             
+        return str;
     }
 }

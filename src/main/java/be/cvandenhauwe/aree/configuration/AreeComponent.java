@@ -10,7 +10,6 @@ import be.cvandenhauwe.aree.input.AreeInput;
 import be.cvandenhauwe.aree.loading.ComponentInjection;
 import be.cvandenhauwe.aree.output.AreeOutput;
 import be.cvandenhauwe.aree.reasoner.AreeReasoner;
-import be.cvandenhauwe.aree.versioning.VersioningStrategy;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.inject.Instance;
@@ -25,18 +24,14 @@ public class AreeComponent {
     
     //description variables
     private final String className;
-    private final VersioningStrategy versioning;
-    private final String version;
     private final AreeArguments setupArguments;
     
     //actual component object
     private AreeComponentInterface instance;
 
-    public AreeComponent(Class cl, String className, VersioningStrategy versioning, String version, AreeArguments setupArguments) {
+    public AreeComponent(Class cl, String className, AreeArguments setupArguments) {
         this.cl = cl;
         this.className = className;
-        this.versioning = versioning;
-        this.version = version;
         this.setupArguments = setupArguments;
     }
     
@@ -102,8 +97,9 @@ public class AreeComponent {
         //attempt to load the class
         Class loadedClass;
         try {
-            loadedClass = loader.loadClass(AreeJarManager.getAreeJarManager().getJarURLs(), className, version, versioning);
+            loadedClass = loader.loadClass(AreeJarManager.getAreeJarManager().getJarURLs(), className);
         } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AreeComponent.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
         

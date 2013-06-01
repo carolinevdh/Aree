@@ -15,15 +15,10 @@ import javax.ejb.Stateless;
 
 @Stateless(name = "plaininput") 
 @EJB(beanInterface = AreeInput.class, beanName = "plaininput", name = "plaininput") 
-public class PlainInput implements AreeInput{
+public class PlainInput extends AreeInput{
 
     @Override
     public Object process(AreeArguments runtimeArguments, Object obj) throws Exception{
         return obj;
-    }    
-
-    @Override
-    public void setup(AreeArguments setupArguments) {
-        //
     }
 }

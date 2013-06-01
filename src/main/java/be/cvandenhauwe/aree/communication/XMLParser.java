@@ -5,12 +5,12 @@
 package be.cvandenhauwe.aree.communication;
 
 import be.cvandenhauwe.aree.configuration.AreeArguments;
+import be.cvandenhauwe.aree.configuration.AreeArgumentsImpl;
 import be.cvandenhauwe.aree.configuration.AreeComponentChain;
 import be.cvandenhauwe.aree.configuration.AreeComponent;
 import be.cvandenhauwe.aree.configuration.AreeConfiguration;
 import be.cvandenhauwe.aree.configuration.ConfigurationManager;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
-import be.cvandenhauwe.aree.versioning.VersioningStrategy;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -70,14 +70,11 @@ public class XMLParser {
     
     public static AreeComponent elementToComponent(Class cl, Element el){
         String className = el.elementText("class");
-        Element versionEl = el.element("version");
-        VersioningStrategy versioning = VersioningStrategy.valueOf(versionEl.attributeValue("strategy"));
-        String version = versionEl.getText();
-        AreeArguments arguments = new AreeArguments();
+        AreeArguments arguments = new AreeArgumentsImpl();
         Element setupEl = el.element("arguments").element("setup");
-        if(setupEl != null) arguments.addFromElement(setupEl);
+        if(setupEl != null) arguments.replaceFromElement(setupEl);
         
-        return new AreeComponent(cl, className, versioning, version, arguments);
+        return new AreeComponent(cl, className, arguments);
     }
     
     public static Element xmlToRootElement(String xml) throws InvalidDescriptorException{

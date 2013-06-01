@@ -5,7 +5,9 @@
 package be.cvandenhauwe.aree.loading;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
@@ -29,9 +31,27 @@ public class AreeWatchService {
     private WatchService watchService;        
 
     private final boolean notDone = true;
+    
+    @Asynchronous
+    public void initialScan(Path path){
+        AreeJarManager jarmgr = AreeJarManager.getAreeJarManager();
+        System.out.println("Server: AreeWatchService attempting initial scan at " + path);
 
-    public AreeWatchService() {
-        System.out.println("Server: new AreeWatchService");
+        
+        DirectoryStream<Path> ds;
+        try {
+            ds = Files.newDirectoryStream(path);
+            System.out.println(ds);
+            for(Path file : ds){
+                String filename = file.getFileName().toString();                
+                if(filename.endsWith(".jar")) jarmgr.addJar(filename);
+            }
+            
+        } catch (IOException ex) {
+            Logger.getLogger(AreeWatchService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        System.out.println("Server: AreeJarManager now contains " + jarmgr.toString());        
     }
     
     @Asynchronous
@@ -60,10 +80,14 @@ public class AreeWatchService {
                      
                      if(kind == OVERFLOW)
                          System.out.println("Server: AreeWatchService OVERFLOW occured!");
-                     else if(kind == ENTRY_CREATE)
+                     else if(kind == ENTRY_CREATE){
                          jarmgr.addJar(name);
-                     else if(kind == ENTRY_DELETE)
-                         jarmgr.removeJar(name);                     
+                         System.out.println("Server: AreeJarManager now contains " + jarmgr.toString());
+                     }else if(kind == ENTRY_DELETE){
+                         jarmgr.removeJar(name);
+                         System.out.println("Server: AreeJarManager now contains " + jarmgr.toString());
+                     }
+                         
                  }
                  if(!watchKey.reset()){
                     System.out.println("Server: AreeWatchService OVERFLOW occured!");

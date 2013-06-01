@@ -5,6 +5,7 @@
 package be.cvandenhauwe.aree.communication;
 
 import be.cvandenhauwe.aree.configuration.AreeArguments;
+import be.cvandenhauwe.aree.configuration.AreeArgumentsImpl;
 import be.cvandenhauwe.aree.configuration.AreeConfiguration;
 import be.cvandenhauwe.aree.configuration.AreeReferee;
 import be.cvandenhauwe.aree.configuration.ConfigurationManager;
@@ -70,25 +71,28 @@ public class RequestResource {
         }
         
         //check for and load arguments
-        AreeArguments runtimeArgs = new AreeArguments();
-        if(injson.containsKey("arguments")) runtimeArgs.addFromJSON(injson.getJSONObject(ARGS));
+        AreeArguments runtimeArgs = new AreeArgumentsImpl();
+        if(injson.containsKey(ARGS)) runtimeArgs.replaceFromJSON(injson.getJSONObject(ARGS));
         
         //fetch configuration, refresh and process 'data'
         AreeConfiguration config = ConfigurationManager.getConfigurationMgr().getConfiguration(injson.getInt(KEY));
+        //todo: check if config != null
         config.refresh(inj);
         try {
             output = AreeReferee.process(config, runtimeArgs, injson.get(INPUT));
-            
+            System.out.println("Server: returning " + output + " to client.");
         //return findings to client
         } catch (ComponentNotFoundException ex) {
             Logger.getLogger(RequestResource.class.getName()).log(Level.SEVERE, null, ex);
             outjson.accumulate(SUCCESS, false);
             outjson.accumulate(RETURN, ex.getMessage());
+            System.out.println("Server: exception sent to client = " + ex.getMessage());
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(outjson.toString()).build();
         } catch (Exception ex) {
             Logger.getLogger(RequestResource.class.getName()).log(Level.SEVERE, null, ex);
             outjson.accumulate(SUCCESS, false);
             outjson.accumulate(RETURN, "Component Exception: " + ex.getMessage());
+            System.out.println("Server: exception sent to client = " + ex.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(outjson.toString()).build();
         }
         return Response.status(Response.Status.OK).entity(output.toString()).build();

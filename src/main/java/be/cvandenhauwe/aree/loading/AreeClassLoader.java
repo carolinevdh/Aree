@@ -4,7 +4,6 @@
  */
 package be.cvandenhauwe.aree.loading;
 
-import be.cvandenhauwe.aree.versioning.VersioningStrategy;
 import java.net.URL;
 import java.net.URLClassLoader;
 
@@ -19,7 +18,7 @@ public class AreeClassLoader extends ClassLoader{
         super(parent);
     }
     
-    public Class loadClass(URL[] urls, String className, String version, VersioningStrategy versioning) throws ClassNotFoundException {
+    public Class loadClass(URL[] urls, String className) throws ClassNotFoundException {
             URLClassLoader child = new URLClassLoader (urls, this.getClass().getClassLoader());
             return Class.forName (className, true, child);
     }

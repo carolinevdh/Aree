@@ -32,8 +32,6 @@ public class AreeConfiguration {
     }
     
     public void refresh(ComponentInjection inj){
-        System.out.println("Server: refreshing config " + KEY);
-        
         if(!inputCCC.isOptimal()) inputCCC.refresh(inj);
         if(!reasonerCCC.isOptimal()) reasonerCCC.refresh(inj);
         if(!outputCCC.isOptimal()) outputCCC.refresh(inj);

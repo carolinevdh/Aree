@@ -46,7 +46,7 @@ public class ConfigurationManager {
     }
 
     public void addNewConfiguration(Integer key, AreeConfiguration config) {
-        if(configurations.containsKey(key)) System.err.println("Configuration Key already exists, configuration " + configurations.get(key) + " gets overwritten.");    
+        if(configurations.containsKey(key)) System.err.println("Configuration Key already exists, configuration " + key + " gets overwritten.");    
         configurations.put(key, config);
     }
 }

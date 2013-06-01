@@ -8,8 +8,6 @@ import be.cvandenhauwe.aree.configuration.AreeArguments;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -18,9 +16,7 @@ import net.sf.json.JSONObject;
  *
  * @author caroline
  */
-//@Stateless(name = "resultsettojsonoutput")
-//@EJB(beanInterface = AreeOutput.class, beanName = "resultsettojsonoutput", name = "resultsettojsonoutput") 
-public class ResultSettoJSONOutput implements AreeOutput{
+public class ResultSettoJSONOutput extends AreeOutput{
     
     @Override
     public Object process(AreeArguments runtimeArgs, Object obj) throws Exception {
@@ -53,10 +49,5 @@ public class ResultSettoJSONOutput implements AreeOutput{
             jo.accumulate("error", e.getMessage());
         }
         return jo;
-    }
-
-    @Override
-    public void setup(AreeArguments setupArguments) {
-        //
     }
 }

@@ -10,14 +10,10 @@ import be.cvandenhauwe.aree.configuration.AreeArguments;
  *
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
  */
-public class PlainReasoner implements AreeReasoner{
+public class PlainReasoner extends AreeReasoner{
 
     @Override
     public Object process(AreeArguments runtimeArguments, Object obj) throws Exception {
         return obj;
-    }
-
-    @Override
-    public void setup(AreeArguments setupArguments) throws Exception {
     }
 }

@@ -4,19 +4,18 @@
  */
 package be.cvandenhauwe.aree.communication;
 
-/**
- *
- * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
- */
-public class AreeProperties{
-    
+
+
+public class AreeProperties {
+
     private static final String SERVER_HOME = "/usr/local/apache-tomee-plus-1.5.2/";
-    
-    public static String getFilesPath(){
+
+    public String getFilesPath() {
         return SERVER_HOME + "Aree-files/";
     }
-    
-    public static String getComponentsPath(){
+
+    public String getComponentsPath() {
         return SERVER_HOME + "Aree-components/";
     }
+    
 }

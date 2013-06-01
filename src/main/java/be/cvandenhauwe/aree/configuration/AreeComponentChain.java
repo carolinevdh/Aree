@@ -25,8 +25,24 @@ public class AreeComponentChain extends ArrayList<AreeComponent>{
             instances.add(c.getInstance());
         }
         return instances;
-    }    
-
+    }
+    
+//    public boolean isCacheable() {
+//        for(AreeComponent c : this){
+//            if(c.usesSetup()) return false;
+//        }
+//        return true;
+//    }    
+//
+//    public String getCacheKey() {
+//        String str = get(0).getName();
+//        int size = size();
+//        for(int i = 1; i < size; i++){
+//            str = str + "-" +  get(i).getName();
+//        }
+//        return str;
+//    }
+    
     public boolean refresh(ComponentInjection inj) throws Exception {
         for(AreeComponent c : this){
             if(c.isInstantiated()) continue;
@@ -43,4 +59,6 @@ public class AreeComponentChain extends ArrayList<AreeComponent>{
         }
         return str;
     }
+
+    
 }

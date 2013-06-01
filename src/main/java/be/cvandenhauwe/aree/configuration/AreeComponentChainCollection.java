@@ -37,6 +37,8 @@ public class AreeComponentChainCollection extends ArrayList<AreeComponentChain> 
         return false;
     }
     
+    
+    
     @Override
     public String toString(){        
         return cl.getSimpleName() + ": " + super.toString();
@@ -48,4 +50,12 @@ public class AreeComponentChainCollection extends ArrayList<AreeComponentChain> 
             if(cc.refresh(inj)) break;            
         }
     }
+    
+//    public boolean isCacheable() {
+//        return size() == 1 && get(0).isCacheable();
+//    }
+//
+//    public String getCacheKey() {
+//        return get(0).getCacheKey();
+//    }
 }

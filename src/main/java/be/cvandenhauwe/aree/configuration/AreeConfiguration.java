@@ -31,6 +31,8 @@ public class AreeConfiguration {
         return inputCCC.isReady() && reasonerCCC.isReady() && outputCCC.isReady();
     }
     
+    
+    
     public void refresh(ComponentInjection inj) throws Exception{
         if(!inputCCC.isOptimal()) inputCCC.refresh(inj);
         if(!reasonerCCC.isOptimal()) reasonerCCC.refresh(inj);
@@ -52,4 +54,12 @@ public class AreeConfiguration {
     public int getKey(){
         return KEY;
     }
+    
+//    public boolean isCacheable(){
+//        return inputCCC.isCacheable() && reasonerCCC.isCacheable() && outputCCC.isCacheable();
+//    }
+//    
+//    public String getCacheKey(){
+//        return "<" + inputCCC.getCacheKey() + ">" + "<" + reasonerCCC.getCacheKey() + ">" + "<" + outputCCC.getCacheKey() + ">";
+//    }
 }

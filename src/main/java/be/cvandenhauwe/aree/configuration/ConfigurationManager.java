@@ -13,6 +13,7 @@ import org.dom4j.Element;
  */
 public class ConfigurationManager {
     private HashMap<Integer, AreeConfiguration> configurations;
+    //private HashMap<String, Integer> cachemap;
     private int lastKey;
     
     private static ConfigurationManager singleton;
@@ -46,6 +47,9 @@ public class ConfigurationManager {
     }
 
     public void addNewConfiguration(Integer key, AreeConfiguration config) {
+//        if(config.isCacheable()){
+//            cachemap.put(config.getCacheKey(), key);
+//        }        
         if(configurations.containsKey(key)) System.err.println("Configuration Key already exists, configuration " + key + " gets overwritten.");    
         configurations.put(key, config);
     }

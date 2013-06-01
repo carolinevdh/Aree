@@ -25,6 +25,7 @@ public class AreeComponent {
     //description variables
     private final String className;
     private final AreeArguments setupArguments;
+    private final boolean hasSetupArgs;
     
     //actual component object
     private AreeComponentInterface instance;
@@ -32,6 +33,7 @@ public class AreeComponent {
     public AreeComponent(Class cl, String className, AreeArguments setupArguments) {
         this.cl = cl;
         this.className = className;
+        this.hasSetupArgs = setupArguments != null;
         this.setupArguments = setupArguments;
     }
     
@@ -44,9 +46,9 @@ public class AreeComponent {
     public String getName() {
         return className;
     }
-
-    public AreeArguments getSetupArguments() {
-        return setupArguments;
+    
+    public boolean usesSetup(){
+        return hasSetupArgs;
     }
 
     public AreeComponentInterface getInstance() {
@@ -65,9 +67,12 @@ public class AreeComponent {
      * instantiates a new AreeInput, -Reasoner or -Output
      * @return success
      */
-    public boolean newInstance(ComponentInjection inj){
-        if(injectInstance(inj)) return true;
-        else return loadInstance();
+    public boolean newInstance(ComponentInjection inj) throws Exception{
+        if(injectInstance(inj) || loadInstance()){
+            if(usesSetup()) getInstance().setup(setupArguments);
+            return true;
+        }
+        return false;
     }
 
     private boolean injectInstance(ComponentInjection inj) {

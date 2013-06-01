@@ -27,7 +27,7 @@ public class AreeComponentChain extends ArrayList<AreeComponent>{
         return instances;
     }    
 
-    public boolean refresh(ComponentInjection inj) {
+    public boolean refresh(ComponentInjection inj) throws Exception {
         for(AreeComponent c : this){
             if(c.isInstantiated()) continue;
             if(!c.newInstance(inj)) return false;

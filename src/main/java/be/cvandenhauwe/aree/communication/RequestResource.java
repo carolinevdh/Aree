@@ -76,9 +76,15 @@ public class RequestResource {
         
         //fetch configuration, refresh and process 'data'
         AreeConfiguration config = ConfigurationManager.getConfigurationMgr().getConfiguration(injson.getInt(KEY));
-        //todo: check if config != null
-        config.refresh(inj);
+        if(config == null){
+            outjson.accumulate(SUCCESS, false);
+            outjson.accumulate(RETURN, "config " + injson.getInt(KEY) + " could not be found, please (re)send a descriptor.");
+            System.out.println("Server: fault sent to client = no config for key" + injson.getInt(KEY));
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(outjson.toString()).build();
+        }
+        
         try {
+            config.refresh(inj);
             output = AreeReferee.process(config, runtimeArgs, injson.get(INPUT));
             System.out.println("Server: returning " + output + " to client.");
         //return findings to client

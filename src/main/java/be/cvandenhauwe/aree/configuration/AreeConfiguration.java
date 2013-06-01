@@ -31,7 +31,7 @@ public class AreeConfiguration {
         return inputCCC.isReady() && reasonerCCC.isReady() && outputCCC.isReady();
     }
     
-    public void refresh(ComponentInjection inj){
+    public void refresh(ComponentInjection inj) throws Exception{
         if(!inputCCC.isOptimal()) inputCCC.refresh(inj);
         if(!reasonerCCC.isOptimal()) reasonerCCC.refresh(inj);
         if(!outputCCC.isOptimal()) outputCCC.refresh(inj);

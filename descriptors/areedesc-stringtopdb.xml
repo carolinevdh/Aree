@@ -6,7 +6,6 @@
 			<chain>
 				<link>
 					<class>be.cvandenhauwe.aree.input.PlainInput</class>
-					<version strategy="DESC"></version>
 					<arguments/>
 				</link>
 			</chain>
@@ -15,12 +14,7 @@
 			<chain>
 				<link>
 					<class>com.johndoe.areesqlitetools.SQLiteReadOnlyReasoner</class>
-					<version strategy="DESC"></version>
-					<arguments>
-						<setup>
-							<getfile key="dbname">Chemistry</dbname>
-						</setup>
-					</arguments>				
+                    <arguments/>			
 				</link>
 			</chain>
 		</reasoner>
@@ -28,8 +22,7 @@
 			<chain>
 				<link>
 					<class>be.cvandenhauwe.aree.output.ResultSettoJSONOutput</class>
-					<version strategy="DESC"></version>
-					<arguments/>				
+                    <arguments/>
 				</link>
 			</chain>
 		</output>		

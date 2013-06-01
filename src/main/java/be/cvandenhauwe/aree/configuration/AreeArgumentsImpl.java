@@ -52,4 +52,8 @@ public class AreeArgumentsImpl extends HashMap<String, Object> implements AreeAr
         return get(key);
     }
     
+    @Override
+    public boolean empty(){
+        return isEmpty();
+    }
 }

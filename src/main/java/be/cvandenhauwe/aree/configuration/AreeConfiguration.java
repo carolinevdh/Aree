@@ -7,11 +7,7 @@ package be.cvandenhauwe.aree.configuration;
 
 import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
-import be.cvandenhauwe.aree.input.AreeInput;
 import be.cvandenhauwe.aree.loading.ComponentInjection;
-import be.cvandenhauwe.aree.output.AreeOutput;
-import be.cvandenhauwe.aree.reasoner.AreeReasoner;
-import org.dom4j.Element;
 
 /**
  *
@@ -21,17 +17,20 @@ public class AreeConfiguration {
     private final int KEY;
     private final AreeComponentChainCollection inputCCC, reasonerCCC, outputCCC;
     
-    public AreeConfiguration(int key, Element inputEl, Element reasonerEl, Element outputEl) throws InvalidDescriptorException{
-        KEY = key;
-        inputCCC = new AreeComponentChainCollection(AreeInput.class, inputEl);
-        reasonerCCC = new AreeComponentChainCollection(AreeReasoner.class, reasonerEl);
-        outputCCC = new AreeComponentChainCollection(AreeOutput.class, outputEl);    }
+    public AreeConfiguration(int key, 
+            AreeComponentChainCollection inputCCC, 
+            AreeComponentChainCollection reasonerCCC,
+            AreeComponentChainCollection outputCCC) throws InvalidDescriptorException{
+        
+        this.KEY = key;
+        this.inputCCC = inputCCC;
+        this.reasonerCCC = reasonerCCC;
+        this.outputCCC = outputCCC;
+    }
     
     public boolean isComplete(){
         return inputCCC.isReady() && reasonerCCC.isReady() && outputCCC.isReady();
     }
-    
-    
     
     public void refresh(ComponentInjection inj) throws Exception{
         if(!inputCCC.isOptimal()) inputCCC.refresh(inj);

@@ -25,7 +25,6 @@ public class AreeComponent {
     //description variables
     private final String className;
     private final AreeArguments setupArguments;
-    private final boolean hasSetupArgs;
     
     //actual component object
     private AreeComponentInterface instance;
@@ -33,22 +32,19 @@ public class AreeComponent {
     public AreeComponent(Class cl, String className, AreeArguments setupArguments) {
         this.cl = cl;
         this.className = className;
-        this.hasSetupArgs = setupArguments != null;
         this.setupArguments = setupArguments;
-    }
-    
+    }    
     
     public boolean isInstantiated(){
         return instance != null;
-    }
-    
+    }    
 
     public String getName() {
         return className;
     }
     
     public boolean usesSetup(){
-        return hasSetupArgs;
+        return !setupArguments.empty();
     }
 
     public AreeComponentInterface getInstance() {

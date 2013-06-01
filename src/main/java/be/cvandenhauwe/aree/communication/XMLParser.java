@@ -8,9 +8,13 @@ import be.cvandenhauwe.aree.configuration.AreeArguments;
 import be.cvandenhauwe.aree.configuration.AreeArgumentsImpl;
 import be.cvandenhauwe.aree.configuration.AreeComponentChain;
 import be.cvandenhauwe.aree.configuration.AreeComponent;
+import be.cvandenhauwe.aree.configuration.AreeComponentChainCollection;
 import be.cvandenhauwe.aree.configuration.AreeConfiguration;
 import be.cvandenhauwe.aree.configuration.ConfigurationManager;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
+import be.cvandenhauwe.aree.input.AreeInput;
+import be.cvandenhauwe.aree.output.AreeOutput;
+import be.cvandenhauwe.aree.reasoner.AreeReasoner;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,7 +30,18 @@ import org.dom4j.io.SAXReader;
  *
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
  */
-public class XMLParser {        
+public class XMLParser {   
+    
+//    public static String descriptorToCacheKey(String descriptor) throws InvalidDescriptorException{
+//        String key = "";
+//        Element root = XMLParser.xmlToRootElement(descriptor);
+//        Element config = root.element("configuration");
+//        Element input = config.element("input");
+//        if(input.elements().size() > 0) 
+//        
+//        
+//        return key;
+//    }
     
     public static AreeConfiguration descriptorToConfiguration(String descriptor) throws InvalidDescriptorException{
         Element root = XMLParser.xmlToRootElement(descriptor);
@@ -35,7 +50,12 @@ public class XMLParser {
             throw new InvalidDescriptorException("Error: Asking new configuration service for " + config.attributeValue("action") + " configuration.");
                 
         int key = ConfigurationManager.getConfigurationMgr().getUniqueKey();
-        return new AreeConfiguration(key, config.element("input"), config.element("reasoner"), config.element("output"));
+        
+        AreeComponentChainCollection inputCCC = elementToComponentChainCollection(AreeInput.class, config.element("input"));
+        AreeComponentChainCollection reasonerCCC = elementToComponentChainCollection(AreeReasoner.class, config.element("reasoner"));
+        AreeComponentChainCollection outputCCC = elementToComponentChainCollection(AreeOutput.class, config.element("output"));
+        
+        return new AreeConfiguration(key, inputCCC, reasonerCCC, outputCCC);
     }
     
     public static Collection<String> ElementToChildrenTextList(Element el, String tag){
@@ -46,7 +66,7 @@ public class XMLParser {
         return list;
     }
     
-    public static ArrayList<AreeComponentChain> elementToComponentChainCollection(Class cl, Element el){
+    public static AreeComponentChainCollection elementToComponentChainCollection(Class cl, Element el) throws InvalidDescriptorException{
         ArrayList<AreeComponentChain> chains = new ArrayList<AreeComponentChain>();
         Iterator it = el.elementIterator("chain");
         while(it.hasNext()){
@@ -54,7 +74,7 @@ public class XMLParser {
             chains.add(elementToComponentChain(cl, next));
         }
         
-        return chains;
+        return new AreeComponentChainCollection(cl, chains);
     }
     
     public static AreeComponentChain elementToComponentChain(Class cl, Element el){

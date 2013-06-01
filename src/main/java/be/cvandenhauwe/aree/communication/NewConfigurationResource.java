@@ -24,7 +24,6 @@ import net.sf.json.JSONObject;
 @RequestScoped
 public class NewConfigurationResource {
 
-    private static final String HELLO = "{msg: 'Welcome to Aree'}";
     private static final String KEY = "key";
     private static final String ERROR = "error";
     private static final String SUCCESS = "success";
@@ -58,11 +57,13 @@ public class NewConfigurationResource {
             ConfigurationManager.getConfigurationMgr().addNewConfiguration(config.getKey(), config);
             
             outjson.accumulate(SUCCESS, true);
-            outjson.accumulate(KEY, config.getKey());           
+            outjson.accumulate(KEY, config.getKey());
+            System.out.println("Server: key sent to client = " + config.getKey());
             return Response.status(201).entity(outjson.toString()).build();
         } catch (InvalidDescriptorException ex) {
             outjson.accumulate(SUCCESS, false);
-            outjson.accumulate(ERROR, ex.getMessage());           
+            outjson.accumulate(ERROR, ex.getMessage());    
+            System.out.println("Server: exception sent to client = " + ex.getMessage());
             return Response.status(201).entity(outjson.toString()).build();
         }
     }

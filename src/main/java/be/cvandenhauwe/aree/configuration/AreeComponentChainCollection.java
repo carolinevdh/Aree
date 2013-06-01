@@ -4,12 +4,10 @@
  */
 package be.cvandenhauwe.aree.configuration;
 
-import be.cvandenhauwe.aree.communication.XMLParser;
 import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
 import be.cvandenhauwe.aree.loading.ComponentInjection;
 import java.util.ArrayList;
-import org.dom4j.Element;
 
 /**
  * 
@@ -18,9 +16,9 @@ import org.dom4j.Element;
 public class AreeComponentChainCollection extends ArrayList<AreeComponentChain> {
     private Class cl;
 
-    AreeComponentChainCollection(Class areeType, Element element) throws InvalidDescriptorException {
+    public AreeComponentChainCollection(Class areeType, ArrayList<AreeComponentChain> chains) throws InvalidDescriptorException {
         cl = areeType;
-        addAll(XMLParser.elementToComponentChainCollection(cl, element));
+        addAll(chains);
     }
     
     public AreeComponentChain getBestChain() throws ComponentNotFoundException{

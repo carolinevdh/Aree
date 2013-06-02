@@ -42,10 +42,10 @@ public class AreeComponentChainCollection extends ArrayList<AreeComponentChain> 
         return cl.getSimpleName() + ": " + super.toString();
     }
 
-    public void refresh(ComponentInjection inj) throws Exception {
+    public void refresh(ComponentInjection inj, String pathToComponents) throws Exception {
         for(AreeComponentChain cc : this){            
             if(cc.isComplete()) break; //we need only 1 complete componentchain
-            if(cc.refresh(inj)) break;            
+            if(cc.refresh(inj, pathToComponents)) break;            
         }
     }
     

@@ -4,14 +4,17 @@
  */
 package be.cvandenhauwe.aree.configuration;
 
-import be.cvandenhauwe.aree.communication.AreeProperties;
 import java.util.HashMap;
 import java.util.Iterator;
+import javax.annotation.Resource;
 import net.sf.json.JSONObject;
 import org.dom4j.Element;
 
 
 public class AreeArgumentsImpl extends HashMap<String, Object> implements AreeArguments {
+    
+    @Resource(name = "pathtofiles")
+    private String pathToFiles;
     
     @Override
     public void replaceFromJSON(JSONObject json){
@@ -36,8 +39,7 @@ public class AreeArgumentsImpl extends HashMap<String, Object> implements AreeAr
         if(!json.containsKey("type") && !json.containsKey("value")) return "";
         String type = json.getString("type");
         if(type.equalsIgnoreCase("getfilepath")){
-            AreeProperties props = new AreeProperties();
-            return props.getFilesPath() + json.getString("value");
+            return pathToFiles + json.getString("value");
         }
         else return json.get("value");
     }

@@ -32,10 +32,10 @@ public class AreeConfiguration {
         return inputCCC.isReady() && reasonerCCC.isReady() && outputCCC.isReady();
     }
     
-    public void refresh(ComponentInjection inj) throws Exception{
-        if(!inputCCC.isOptimal()) inputCCC.refresh(inj);
-        if(!reasonerCCC.isOptimal()) reasonerCCC.refresh(inj);
-        if(!outputCCC.isOptimal()) outputCCC.refresh(inj);
+    public void refresh(ComponentInjection inj, String pathToComponents) throws Exception{
+        if(!inputCCC.isOptimal()) inputCCC.refresh(inj, pathToComponents);
+        if(!reasonerCCC.isOptimal()) reasonerCCC.refresh(inj, pathToComponents);
+        if(!outputCCC.isOptimal()) outputCCC.refresh(inj, pathToComponents);
     }
     
     public AreeComponentChain getInputChain() throws ComponentNotFoundException{

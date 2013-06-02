@@ -7,6 +7,7 @@ package be.cvandenhauwe.aree.loading;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -19,17 +20,17 @@ import javax.ejb.Startup;
 @Singleton
 @Startup
 public class Initiator {
-    
-    //private static final Path PATH = Paths.get(AreeProperties.getAreeProperties().getComponentsPath());
-    private static final Path PATH = Paths.get("/Library/TomEEp/Aree-components/");
+        
+    @Resource(name = "pathtocomponents")
+    private String pathToComponents;
     
     @EJB
     private AreeWatchService watchService;
 
     @PostConstruct
     public void init() {
-        System.out.println("Server: Initiator PostConstruct");
-        watchService.initialScan(PATH);
-        watchService.poll(PATH,60);
+        Path path = Paths.get(pathToComponents);
+        watchService.initialScan(path);
+        watchService.poll(path,60);
     }
 }

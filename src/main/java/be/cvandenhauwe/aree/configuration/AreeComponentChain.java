@@ -43,10 +43,10 @@ public class AreeComponentChain extends ArrayList<AreeComponent>{
 //        return str;
 //    }
     
-    public boolean refresh(ComponentInjection inj) throws Exception {
+    public boolean refresh(ComponentInjection inj, String pathToComponents) throws Exception {
         for(AreeComponent c : this){
             if(c.isInstantiated()) continue;
-            if(!c.newInstance(inj)) return false;
+            if(!c.newInstance(inj,pathToComponents)) return false;
         }
         return true;
     }    

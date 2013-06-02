@@ -44,7 +44,6 @@ public class NewConfigurationResource {
     
     @POST
     @Path("/post")
-    //@Consumes("application/xml")
     public Response postXml(String content) {
         JSONObject outjson = new JSONObject();
         
@@ -67,6 +66,4 @@ public class NewConfigurationResource {
             return Response.status(201).entity(outjson.toString()).build();
         }
     }
-    
-    
 }

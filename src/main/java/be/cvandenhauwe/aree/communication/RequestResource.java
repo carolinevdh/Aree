@@ -4,7 +4,6 @@
  */
 package be.cvandenhauwe.aree.communication;
 
-import be.cvandenhauwe.aree.configuration.AreeArguments;
 import be.cvandenhauwe.aree.configuration.AreeArgumentsImpl;
 import be.cvandenhauwe.aree.configuration.AreeConfiguration;
 import be.cvandenhauwe.aree.configuration.AreeReferee;
@@ -13,6 +12,7 @@ import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
 import be.cvandenhauwe.aree.loading.ComponentInjection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Resource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -39,6 +39,13 @@ public class RequestResource {
     
     @Inject
     private ComponentInjection inj;
+    
+    @Inject
+    private AreeArgumentsImpl runtimeArgs;
+    
+    @Resource(name = "pathtocomponents")
+    private String pathToComponents;
+    
     
     /**
      * Creates a new instance of RequestResource
@@ -71,7 +78,6 @@ public class RequestResource {
         }
         
         //check for and load arguments
-        AreeArguments runtimeArgs = new AreeArgumentsImpl();
         if(injson.containsKey(ARGS)) runtimeArgs.replaceFromJSON(injson.getJSONObject(ARGS));
         
         //fetch configuration, refresh and process 'data'
@@ -84,7 +90,7 @@ public class RequestResource {
         }
         
         try {
-            config.refresh(inj);
+            config.refresh(inj, pathToComponents);
             output = AreeReferee.process(config, runtimeArgs, injson.get(INPUT));
             System.out.println("Server: returning " + output + " to client.");
         //return findings to client

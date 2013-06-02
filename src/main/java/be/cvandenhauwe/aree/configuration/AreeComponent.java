@@ -63,8 +63,8 @@ public class AreeComponent {
      * instantiates a new AreeInput, -Reasoner or -Output
      * @return success
      */
-    public boolean newInstance(ComponentInjection inj) throws Exception{
-        if(injectInstance(inj) || loadInstance()){
+    public boolean newInstance(ComponentInjection inj, String pathToComponents) throws Exception{
+        if(injectInstance(inj) || loadInstance(pathToComponents)){
             if(usesSetup()) getInstance().setup(setupArguments);
             return true;
         }
@@ -92,13 +92,13 @@ public class AreeComponent {
         return false;
     }
 
-    private boolean loadInstance() {
+    private boolean loadInstance(String pathToComponents) {
         AreeClassLoader loader = new AreeClassLoader(AreeComponent.class.getClassLoader());
         
         //attempt to load the class
         Class loadedClass;
         try {
-            loadedClass = loader.loadClass(AreeJarManager.getAreeJarManager().getJarURLs(), className);
+            loadedClass = loader.loadClass(AreeJarManager.getAreeJarManager().getJarURLs(pathToComponents), className);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(AreeComponent.class.getName()).log(Level.SEVERE, null, ex);
             return false;

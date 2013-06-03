@@ -84,7 +84,7 @@ public class RequestResource {
         AreeConfiguration config = ConfigurationManager.getConfigurationMgr().getConfiguration(injson.getInt(KEY));
         if(config == null){
             outjson.accumulate(SUCCESS, false);
-            outjson.accumulate(RETURN, "config " + injson.getInt(KEY) + " could not be found, please (re)send a descriptor.");
+            outjson.accumulate(ERROR, "config " + injson.getInt(KEY) + " could not be found, please (re)send a descriptor.");
             System.out.println("Server: fault sent to client = no config for key" + injson.getInt(KEY));
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(outjson.toString()).build();
         }
@@ -97,13 +97,13 @@ public class RequestResource {
         } catch (ComponentNotFoundException ex) {
             Logger.getLogger(RequestResource.class.getName()).log(Level.SEVERE, null, ex);
             outjson.accumulate(SUCCESS, false);
-            outjson.accumulate(RETURN, ex.getMessage());
+            outjson.accumulate(ERROR, ex.getMessage());
             System.out.println("Server: exception sent to client = " + ex.getMessage());
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(outjson.toString()).build();
         } catch (Exception ex) {
             Logger.getLogger(RequestResource.class.getName()).log(Level.SEVERE, null, ex);
             outjson.accumulate(SUCCESS, false);
-            outjson.accumulate(RETURN, "Component Exception: " + ex.getMessage());
+            outjson.accumulate(ERROR, "Component Exception: " + ex.getMessage());
             System.out.println("Server: exception sent to client = " + ex.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(outjson.toString()).build();
         }

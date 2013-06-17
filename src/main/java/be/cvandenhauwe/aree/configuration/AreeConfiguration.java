@@ -7,7 +7,7 @@ package be.cvandenhauwe.aree.configuration;
 
 import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
-import be.cvandenhauwe.aree.loading.ComponentInjection;
+import be.cvandenhauwe.aree.loading.AreeContext;
 
 /**
  *
@@ -32,7 +32,7 @@ public class AreeConfiguration {
         return inputCCC.isReady() && reasonerCCC.isReady() && outputCCC.isReady();
     }
     
-    public void refresh(ComponentInjection inj, String pathToComponents) throws Exception{
+    public void refresh(AreeContext inj, String pathToComponents) throws Exception{
         if(!inputCCC.isOptimal()) inputCCC.refresh(inj, pathToComponents);
         if(!reasonerCCC.isOptimal()) reasonerCCC.refresh(inj, pathToComponents);
         if(!outputCCC.isOptimal()) outputCCC.refresh(inj, pathToComponents);

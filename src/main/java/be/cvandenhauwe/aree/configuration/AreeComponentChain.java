@@ -4,7 +4,7 @@
  */
 package be.cvandenhauwe.aree.configuration;
 
-import be.cvandenhauwe.aree.loading.ComponentInjection;
+import be.cvandenhauwe.aree.loading.AreeContext;
 import java.util.ArrayList;
 
 /**
@@ -43,7 +43,7 @@ public class AreeComponentChain extends ArrayList<AreeComponent>{
 //        return str;
 //    }
     
-    public boolean refresh(ComponentInjection inj, String pathToComponents) throws Exception {
+    public boolean refresh(AreeContext inj, String pathToComponents) throws Exception {
         for(AreeComponent c : this){
             if(c.isInstantiated()) continue;
             if(!c.newInstance(inj,pathToComponents)) return false;

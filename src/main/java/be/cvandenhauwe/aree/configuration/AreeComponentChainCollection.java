@@ -6,7 +6,7 @@ package be.cvandenhauwe.aree.configuration;
 
 import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
-import be.cvandenhauwe.aree.loading.ComponentInjection;
+import be.cvandenhauwe.aree.loading.AreeContext;
 import java.util.ArrayList;
 
 /**
@@ -42,7 +42,7 @@ public class AreeComponentChainCollection extends ArrayList<AreeComponentChain> 
         return cl.getSimpleName() + ": " + super.toString();
     }
 
-    public void refresh(ComponentInjection inj, String pathToComponents) throws Exception {
+    public void refresh(AreeContext inj, String pathToComponents) throws Exception {
         for(AreeComponentChain cc : this){            
             if(cc.isComplete()) break; //we need only 1 complete componentchain
             if(cc.refresh(inj, pathToComponents)) break;            

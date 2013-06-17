@@ -58,7 +58,7 @@ public class AreeWatchService {
     public void poll(Path path, int everySeconds) {
         try {
             watchService = FileSystems.getDefault().newWatchService();
-            watchKey = path.register(watchService,ENTRY_CREATE,ENTRY_DELETE,ENTRY_MODIFY,OVERFLOW);
+            watchKey = path.register(watchService,ENTRY_CREATE,ENTRY_DELETE,OVERFLOW);
         } catch (IOException ex) {
             Logger.getLogger(AreeWatchService.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Server: WatchService failed, will not be able to hot swap .jars.");

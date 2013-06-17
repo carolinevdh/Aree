@@ -9,7 +9,7 @@ import be.cvandenhauwe.aree.configuration.AreeConfiguration;
 import be.cvandenhauwe.aree.configuration.AreeReferee;
 import be.cvandenhauwe.aree.configuration.ConfigurationManager;
 import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
-import be.cvandenhauwe.aree.loading.ComponentInjection;
+import be.cvandenhauwe.aree.loading.AreeContext;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -38,7 +38,7 @@ public class RequestResource {
     private static final String ARGS = "args";
     
     @Inject
-    private ComponentInjection inj;
+    private AreeContext inj;
     
     @Inject
     private AreeArgumentsImpl runtimeArgs;

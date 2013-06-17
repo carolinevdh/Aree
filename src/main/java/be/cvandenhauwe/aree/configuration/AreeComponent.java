@@ -7,7 +7,7 @@ package be.cvandenhauwe.aree.configuration;
 import be.cvandenhauwe.aree.loading.AreeJarManager;
 import be.cvandenhauwe.aree.loading.AreeClassLoader;
 import be.cvandenhauwe.aree.input.AreeInput;
-import be.cvandenhauwe.aree.loading.ComponentInjection;
+import be.cvandenhauwe.aree.loading.AreeContext;
 import be.cvandenhauwe.aree.output.AreeOutput;
 import be.cvandenhauwe.aree.reasoner.AreeReasoner;
 import java.util.logging.Level;
@@ -63,7 +63,7 @@ public class AreeComponent {
      * instantiates a new AreeInput, -Reasoner or -Output
      * @return success
      */
-    public boolean newInstance(ComponentInjection inj, String pathToComponents) throws Exception{
+    public boolean newInstance(AreeContext inj, String pathToComponents) throws Exception{
         if(injectInstance(inj) || loadInstance(pathToComponents)){
             if(usesSetup()) getInstance().setup(setupArguments);
             return true;
@@ -71,7 +71,7 @@ public class AreeComponent {
         return false;
     }
 
-    private boolean injectInstance(ComponentInjection inj) {
+    private boolean injectInstance(AreeContext inj) {
         boolean success = false;        
         String clName = cl.getSimpleName();
         

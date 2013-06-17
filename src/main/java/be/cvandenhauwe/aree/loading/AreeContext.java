@@ -14,7 +14,7 @@ import javax.inject.Inject;
  *
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
  */
-public class ComponentInjection {
+public class AreeContext {
     @Inject
     private Instance<AreeInput> inputs;
     

@@ -28,3 +28,23 @@
 		</output>		
 	</configuration>
 </descriptor>
+
+
+
+<!--<descriptor>
+	<configuration> 
+		<chain> 
+			<component class="com.johndoe.areesqlitetools.SQLiteReadOnlyReasoner" hassetup="true">
+				<arguments>
+					<argument name="databasename">Chemistry.db</argument>
+				</arguments>
+			</component>
+			<component identifier="be.cvandenhauwe.aree.output.ResultSettoJSONOutput" hassetup="false" />
+		</chain>
+		<chain> 
+			<component identifier="be.cvandenhauwe.aree.input.JSONParser" hassetup="false" />
+			<component identifier="com.janedoe.rcsb.pdb" hassetup="false" />
+			<component identifier="be.cvandenhauwe.aree.output.FileServer" hassetup="false" />
+		</chain>
+	</configuration>
+</descriptor>-->

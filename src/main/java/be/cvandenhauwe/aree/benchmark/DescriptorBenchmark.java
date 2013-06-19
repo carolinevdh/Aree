@@ -7,6 +7,7 @@ package be.cvandenhauwe.aree.benchmark;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,11 +20,12 @@ import org.apache.commons.io.IOUtils;
  *
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
  */
-public class DescriptorBenchmark extends Benchmark{
+public class DescriptorBenchmark extends RESTRequest{
 
     private ArrayList<Long> timings = new ArrayList<Long>();
     
     public DescriptorBenchmark() {}
+    
     
     public void run(int times){ 
         FileInputStream input = null;
@@ -34,20 +36,18 @@ public class DescriptorBenchmark extends Benchmark{
             input = new FileInputStream(descriptorPath + descriptor);
             byte[] bytes = IOUtils.toByteArray(input);
             
-            while(times >= 0){
+            while(times >= 1){
                 long startTime = System.currentTimeMillis();
                 HttpURLConnection conn = connect(
                         new URL("http://localhost:8080/Aree/newconfiguration/post"),
                         "application/xml",
                         bytes, "POST");
+                System.out.println(readAll(new InputStreamReader(conn.getInputStream())));
                 long endTime = System.currentTimeMillis();
                 timings.add(endTime-startTime);
                 times--;
                 conn.disconnect();
             }
-            
-            
-            
         } catch (FileNotFoundException ex) {
             Logger.getLogger(DescriptorBenchmark.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MalformedURLException ex) {

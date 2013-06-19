@@ -22,7 +22,8 @@ public class AreeArgumentsImpl extends HashMap<String, Object> implements AreeAr
         Iterator it = json.keys();
         while(it.hasNext()){
             String key = it.next().toString();
-            put(key, transform(json.getJSONObject(key)));
+            Object value = json.get(key);
+            put(key, value);
         }
     }
     
@@ -33,15 +34,6 @@ public class AreeArgumentsImpl extends HashMap<String, Object> implements AreeAr
             Element next = (Element) it.next();
             put(next.getName(), next.getText());
         }
-    }
-    
-    public Object transform(JSONObject json){
-        if(!json.containsKey("type") && !json.containsKey("value")) return "";
-        String type = json.getString("type");
-        if(type.equalsIgnoreCase("getfilepath")){
-            return pathToFiles + json.getString("value");
-        }
-        else return json.get("value");
     }
 
     @Override
@@ -57,5 +49,10 @@ public class AreeArgumentsImpl extends HashMap<String, Object> implements AreeAr
     @Override
     public boolean empty(){
         return isEmpty();
+    }
+
+    @Override
+    public String getPathToFiles() {
+        return pathToFiles;
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Aree Descriptor file -->
-<descriptor>
+<!--<descriptor>
 	<configuration action="new">
 		<input>
 			<chain>
@@ -27,18 +27,14 @@
 			</chain>
 		</output>		
 	</configuration>
-</descriptor>
+</descriptor>-->
 
 
 
-<!--<descriptor>
+<descriptor>
 	<configuration> 
 		<chain> 
-			<component class="com.johndoe.areesqlitetools.SQLiteReadOnlyReasoner" hassetup="true">
-				<arguments>
-					<argument name="databasename">Chemistry.db</argument>
-				</arguments>
-			</component>
+			<component identifier="com.johndoe.areesqlitetools.SQLiteReadOnlyReasoner" hassetup="false" />
 			<component identifier="be.cvandenhauwe.aree.output.ResultSettoJSONOutput" hassetup="false" />
 		</chain>
 		<chain> 
@@ -47,4 +43,4 @@
 			<component identifier="be.cvandenhauwe.aree.output.FileServer" hassetup="false" />
 		</chain>
 	</configuration>
-</descriptor>-->
+</descriptor>

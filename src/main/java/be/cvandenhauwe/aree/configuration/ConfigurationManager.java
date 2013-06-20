@@ -5,7 +5,6 @@
 package be.cvandenhauwe.aree.configuration;
 
 import java.util.HashMap;
-import org.dom4j.Element;
 
 /**
  *
@@ -13,13 +12,12 @@ import org.dom4j.Element;
  */
 public class ConfigurationManager {
     private HashMap<Integer, AreeConfiguration> configurations;
-    //private HashMap<String, Integer> cachemap;
     private int lastKey;
     
     private static ConfigurationManager singleton;
 
     private ConfigurationManager(){
-        configurations = new HashMap<Integer, AreeConfiguration>();
+        configurations = new HashMap<>();
         lastKey = -1;
     }
     
@@ -32,24 +30,13 @@ public class ConfigurationManager {
         lastKey++;
         return lastKey;
     }
-    
-    public boolean isValidConfiguration(Element el){
-        if(el.elements("input").size() < 1) return false;
-        if(el.elements("reasoner").size() < 1) return false;
-        if(el.elements("output").size() < 1) return false;
-        
-        return true;
-    }
 
     public AreeConfiguration getConfiguration(int i) {
         if(!configurations.containsKey(i)) System.out.println("Server: oops, requesting non-existent configuration " + i);
         return configurations.get(i);
     }
 
-    public void addNewConfiguration(Integer key, AreeConfiguration config) {
-//        if(config.isCacheable()){
-//            cachemap.put(config.getCacheKey(), key);
-//        }        
+    public void addNewConfiguration(Integer key, AreeConfiguration config) { 
         if(configurations.containsKey(key)) System.err.println("Configuration Key already exists, configuration " + key + " gets overwritten.");    
         configurations.put(key, config);
     }

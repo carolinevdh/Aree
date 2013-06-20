@@ -4,9 +4,7 @@
  */
 package be.cvandenhauwe.aree.loading;
 
-import be.cvandenhauwe.aree.input.AreeInput;
-import be.cvandenhauwe.aree.output.AreeOutput;
-import be.cvandenhauwe.aree.reasoner.AreeReasoner;
+import be.cvandenhauwe.aree.configuration.AreeComponentInterface;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -15,25 +13,11 @@ import javax.inject.Inject;
  * @author Caroline Van den Hauwe <caroline.van.den.hauwe@gmail.com>
  */
 public class AreeContext {
-    @Inject
-    private Instance<AreeInput> inputs;
     
     @Inject
-    private Instance<AreeReasoner> reasoners;
+    private Instance<AreeComponentInterface> components;
     
-    @Inject
-    private Instance<AreeOutput> outputs;
-
-    
-    public Instance<AreeInput> getInputs() {
-        return inputs;
+    public Instance<AreeComponentInterface> getComponents(){
+        return components;
     }
-
-    public Instance<AreeReasoner> getReasoners() {
-        return reasoners;
-    }
-
-    public Instance<AreeOutput> getOutputs() {
-        return outputs;
-    }    
 }

@@ -6,10 +6,10 @@ package be.cvandenhauwe.aree.communication;
 
 import be.cvandenhauwe.aree.configuration.AreeArgumentsImpl;
 import be.cvandenhauwe.aree.configuration.AreeConfiguration;
-import be.cvandenhauwe.aree.configuration.AreeReferee;
+import be.cvandenhauwe.aree.loading.AreeContext;
+import be.cvandenhauwe.aree.configuration.AreePipeline;
 import be.cvandenhauwe.aree.configuration.ConfigurationManager;
 import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
-import be.cvandenhauwe.aree.loading.AreeContext;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -57,7 +57,7 @@ public class RequestResource {
     @Path("post")
     @Consumes("application/json")
     public Response postJson(String content) {
-        System.out.println("Server received request: " + content);
+        System.out.println("Server: received request " + content);
         
         Object output = new Object();
         JSONObject outjson = new JSONObject();
@@ -91,7 +91,7 @@ public class RequestResource {
         
         try {
             config.refresh(inj, pathToComponents);
-            output = AreeReferee.process(config, runtimeArgs, injson.get(INPUT));
+            output = AreePipeline.process(config, runtimeArgs, injson.get(INPUT));
             System.out.println("Server: returning " + output + " to client.");
         //return findings to client
         } catch (ComponentNotFoundException ex) {

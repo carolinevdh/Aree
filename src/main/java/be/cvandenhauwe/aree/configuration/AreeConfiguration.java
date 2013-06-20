@@ -1,13 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package be.cvandenhauwe.aree.configuration;
 
-import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
-import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
 import be.cvandenhauwe.aree.loading.AreeContext;
+import be.cvandenhauwe.aree.exceptions.ComponentNotFoundException;
 
 /**
  *
@@ -15,50 +13,35 @@ import be.cvandenhauwe.aree.loading.AreeContext;
  */
 public class AreeConfiguration {
     private final int KEY;
-    private final AreeComponentChainCollection inputCCC, reasonerCCC, outputCCC;
+    private final AreeChainCollection chains;
     
-    public AreeConfiguration(int key, 
-            AreeComponentChainCollection inputCCC, 
-            AreeComponentChainCollection reasonerCCC,
-            AreeComponentChainCollection outputCCC) throws InvalidDescriptorException{
-        
+    public AreeConfiguration(int key, AreeChainCollection chains){
         this.KEY = key;
-        this.inputCCC = inputCCC;
-        this.reasonerCCC = reasonerCCC;
-        this.outputCCC = outputCCC;
+        this.chains = chains;
     }
     
     public boolean isComplete(){
-        return inputCCC.isReady() && reasonerCCC.isReady() && outputCCC.isReady();
+        return chains.isReady();
     }
     
     public void refresh(AreeContext inj, String pathToComponents) throws Exception{
-        if(!inputCCC.isOptimal()) inputCCC.refresh(inj, pathToComponents);
-        if(!reasonerCCC.isOptimal()) reasonerCCC.refresh(inj, pathToComponents);
-        if(!outputCCC.isOptimal()) outputCCC.refresh(inj, pathToComponents);
+        if(!chains.isOptimal()) chains.refresh(inj, pathToComponents);
     }
     
-    public AreeComponentChain getInputChain() throws ComponentNotFoundException{
-        return inputCCC.getBestChain();
-    }
-    
-    public AreeComponentChain getReasonerChain() throws ComponentNotFoundException{
-        return reasonerCCC.getBestChain();
-    }
-    
-    public AreeComponentChain getOutputChain() throws ComponentNotFoundException{
-        return outputCCC.getBestChain();
+    public AreeChain getChain() throws ComponentNotFoundException{
+        return chains.getBestChain();
     }
     
     public int getKey(){
         return KEY;
     }
     
-//    public boolean isCacheable(){
-//        return inputCCC.isCacheable() && reasonerCCC.isCacheable() && outputCCC.isCacheable();
-//    }
-//    
-//    public String getCacheKey(){
-//        return "<" + inputCCC.getCacheKey() + ">" + "<" + reasonerCCC.getCacheKey() + ">" + "<" + outputCCC.getCacheKey() + ">";
-//    }
+    @Override
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        str.append("======================configuration #" + KEY + "==========================\n");
+        str.append(chains.toString());
+        str.append("===============================================================");
+        return str.toString();
+    }
 }

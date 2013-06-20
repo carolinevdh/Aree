@@ -4,7 +4,7 @@
  */
 package be.cvandenhauwe.aree;
 
-import be.cvandenhauwe.aree.benchmark.DescriptorBenchmark;
+import be.cvandenhauwe.aree.experiments.DescriptorBenchmark;
 
 /**
  *

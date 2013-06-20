@@ -48,11 +48,8 @@ public class NewConfigurationResource {
         JSONObject outjson = new JSONObject();
         
         try {
-            System.out.println("Server: received new configuration from client: ---");
-            System.out.println(content);
-            System.out.println("--------------end---------------");
-           
             AreeConfiguration config = XMLParser.descriptorToConfiguration(content);
+            System.out.println("Server: parsed following configuration \n" + config.toString());
             ConfigurationManager.getConfigurationMgr().addNewConfiguration(config.getKey(), config);
             
             outjson.accumulate(SUCCESS, true);

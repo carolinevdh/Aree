@@ -6,18 +6,13 @@ package be.cvandenhauwe.aree.communication;
 
 import be.cvandenhauwe.aree.configuration.AreeArguments;
 import be.cvandenhauwe.aree.configuration.AreeArgumentsImpl;
-import be.cvandenhauwe.aree.configuration.AreeComponentChain;
-import be.cvandenhauwe.aree.configuration.AreeComponent;
-import be.cvandenhauwe.aree.configuration.AreeComponentChainCollection;
+import be.cvandenhauwe.aree.configuration.AreeChain;
+import be.cvandenhauwe.aree.configuration.AreeChainCollection;
+import be.cvandenhauwe.aree.configuration.AreeComponentWrapper;
 import be.cvandenhauwe.aree.configuration.AreeConfiguration;
 import be.cvandenhauwe.aree.configuration.ConfigurationManager;
 import be.cvandenhauwe.aree.exceptions.InvalidDescriptorException;
-import be.cvandenhauwe.aree.input.AreeInput;
-import be.cvandenhauwe.aree.output.AreeOutput;
-import be.cvandenhauwe.aree.reasoner.AreeReasoner;
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,71 +27,6 @@ import org.dom4j.io.SAXReader;
  */
 public class XMLParser {   
     
-//    public static String descriptorToCacheKey(String descriptor) throws InvalidDescriptorException{
-//        String key = "";
-//        Element root = XMLParser.xmlToRootElement(descriptor);
-//        Element config = root.element("configuration");
-//        Element input = config.element("input");
-//        if(input.elements().size() > 0) 
-//        
-//        
-//        return key;
-//    }
-    
-    public static AreeConfiguration descriptorToConfiguration(String descriptor) throws InvalidDescriptorException{
-        Element root = XMLParser.xmlToRootElement(descriptor);
-        Element config = root.element("configuration");
-        if(!config.attributeValue("action").equals("new")) 
-            throw new InvalidDescriptorException("Error: Asking new configuration service for " + config.attributeValue("action") + " configuration.");
-                
-        int key = ConfigurationManager.getConfigurationMgr().getUniqueKey();
-        
-        AreeComponentChainCollection inputCCC = elementToComponentChainCollection(AreeInput.class, config.element("input"));
-        AreeComponentChainCollection reasonerCCC = elementToComponentChainCollection(AreeReasoner.class, config.element("reasoner"));
-        AreeComponentChainCollection outputCCC = elementToComponentChainCollection(AreeOutput.class, config.element("output"));
-        
-        return new AreeConfiguration(key, inputCCC, reasonerCCC, outputCCC);
-    }
-    
-    public static Collection<String> ElementToChildrenTextList(Element el, String tag){
-        ArrayList<String> list = new ArrayList<String>();
-        Iterator it = el.elementIterator(tag);
-        while(it.hasNext())
-            list.add(((Element) it.next()).getText());
-        return list;
-    }
-    
-    public static AreeComponentChainCollection elementToComponentChainCollection(Class cl, Element el) throws InvalidDescriptorException{
-        ArrayList<AreeComponentChain> chains = new ArrayList<AreeComponentChain>();
-        Iterator it = el.elementIterator("chain");
-        while(it.hasNext()){
-            Element next = (Element) it.next();
-            chains.add(elementToComponentChain(cl, next));
-        }
-        
-        return new AreeComponentChainCollection(cl, chains);
-    }
-    
-    public static AreeComponentChain elementToComponentChain(Class cl, Element el){
-        AreeComponentChain cc = new AreeComponentChain();
-        Iterator it = el.elementIterator("link");
-        while(it.hasNext()){
-            Element next = (Element) it.next();
-            cc.add(elementToComponent(cl, next));
-        }
-        
-        return cc;
-    }
-    
-    public static AreeComponent elementToComponent(Class cl, Element el){
-        String className = el.elementText("class");
-        AreeArguments arguments = new AreeArgumentsImpl();
-        Element setupEl = el.element("arguments").element("setup");
-        if(setupEl != null) arguments.replaceFromElement(setupEl);
-        
-        return new AreeComponent(cl, className, arguments);
-    }
-    
     public static Element xmlToRootElement(String xml) throws InvalidDescriptorException{
         SAXReader reader = new SAXReader();
         Document doc;
@@ -107,5 +37,38 @@ public class XMLParser {
             throw new InvalidDescriptorException("invalid XML");
         }
         return doc.getRootElement();
+    }
+    
+    public static AreeConfiguration descriptorToConfiguration(String descriptor) throws InvalidDescriptorException{
+        Element config = xmlToRootElement(descriptor).element("configuration");
+        
+        int key = ConfigurationManager.getConfigurationMgr().getUniqueKey();
+        AreeChainCollection chains = elementToChainCollection(config);
+        
+        return new AreeConfiguration(key, chains);
+    }
+    
+    private static AreeChainCollection elementToChainCollection(Element config) {
+        AreeChainCollection chains = new AreeChainCollection();
+        Iterator<Element> it = config.elementIterator("chain");
+        while(it.hasNext()) chains.add(elementToChain(it.next()));        
+        return chains;
+    }
+    
+    public static AreeChain elementToChain(Element chainEl){
+        AreeChain chain = new AreeChain();
+        Iterator<Element> it = chainEl.elementIterator("component");
+        while(it.hasNext()) chain.add(elementToComponentWrapper(it.next()));
+        return chain;
+    }
+    
+    public static AreeComponentWrapper elementToComponentWrapper(Element compEl){
+        String identifier = compEl.attributeValue("identifier");
+        boolean hasSetup = Boolean.parseBoolean(compEl.attributeValue("hassetup"));
+        if(hasSetup){
+            AreeArguments setupArguments = new AreeArgumentsImpl();
+            setupArguments.replaceFromElement(compEl.element("arguments"));
+            return new AreeComponentWrapper(identifier, setupArguments);
+        }else return new AreeComponentWrapper(identifier);        
     }
 }

@@ -40,4 +40,12 @@ public class ConfigurationManager {
         if(configurations.containsKey(key)) System.err.println("Configuration Key already exists, configuration " + key + " gets overwritten.");    
         configurations.put(key, config);
     }
+
+    public void reset() {
+        singleton = new ConfigurationManager();
+    }
+
+    public int size() {
+        return configurations.size();
+    }
 }

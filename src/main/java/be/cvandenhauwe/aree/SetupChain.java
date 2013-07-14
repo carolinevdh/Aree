@@ -5,6 +5,12 @@
 package be.cvandenhauwe.aree;
 
 import be.cvandenhauwe.aree.experiments.DescriptorBenchmark;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  *
@@ -12,13 +18,74 @@ import be.cvandenhauwe.aree.experiments.DescriptorBenchmark;
  */
 
 public class SetupChain {
-    
    
+    private static final int START_THREADS = 50;
+    private static final int STEP_THREADS = 50;
+    private static final int STOP_THREADS = 1000;
     
-    public static void main(String[] args) {
-        DescriptorBenchmark descriptorbm = new DescriptorBenchmark();  
-        descriptorbm.run(1);
-        //System.out.println(descriptorbm.getAverage(10));
+    private static final int TIMES = 30;
+    private static final int WARMUP = 5;
+    
+    public static void main(String[] args) throws InterruptedException, IOException {
+        final HashMap<Integer,ArrayList> alltimings = new HashMap();
+        
+        int threads = START_THREADS;        
+        while(threads <= STOP_THREADS){ //varieer aantal uit te voeren threads
+            System.out.println("==== GOING FOR " + threads + " threads. ====");
+            final ArrayList<Long> timings = new ArrayList();
+            int counter = 0;
+            while(counter < (TIMES + WARMUP)){
+                System.out.println("=> " + threads + "thr, #" + (counter + 1));
+                ExecutorService threadPool = Executors.newFixedThreadPool(threads);
+
+                for (int i = 0; i < threads; i++) {
+                    threadPool.submit(new Runnable() {
+                        @Override
+                        public void run() {
+                            DescriptorBenchmark descriptorbm = new DescriptorBenchmark();
+                            long start = System.currentTimeMillis();
+                            descriptorbm.run(1);
+                            long end = System.currentTimeMillis();
+                            timings.add(end-start);                        
+                            System.out.println(end-start);
+                        }
+                    });
+                }
+                
+                threadPool.shutdown();
+                Thread.sleep(1000);
+                counter++;
+            }
+            alltimings.put(threads, timings);
+            threads += STEP_THREADS;
+            Thread.sleep(1000);
+        }
+        
+        
+        
+        
+        
+        
+//        FileWriter writer = new FileWriter("/Users/caroline/Desktop/from" + START_THREADS + "to" + STOP_THREADS + "in" + STEP_THREADS + ".csv");
+//        writer.append("threads,time (ms)\n");
+//        
+//        int writercounter = START_THREADS;
+//        for(int j = START_THREADS; j < STOP_THREADS + 1; j += STEP_THREADS){
+//            ArrayList<Long> times2write = alltimings.get(j);
+//            int size = times2write.size();
+//            int skip = WARMUP * j;
+//            for(int i = skip; i < size; i++){
+//                writer.append(String.valueOf(j));
+//                writer.append(',');
+//                writer.append(String.valueOf(times2write.get(i)));
+//                writer.append('\n');
+//            }  
+//        }
+//        
+//          
+//        
+//        writer.flush();
+//	writer.close();
     }
        
  //   private static void sendXML(){

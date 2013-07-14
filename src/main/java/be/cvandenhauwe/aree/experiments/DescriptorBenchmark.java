@@ -4,6 +4,7 @@
  */
 package be.cvandenhauwe.aree.experiments;
 
+import static be.cvandenhauwe.aree.experiments.RESTRequest.connect;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -36,18 +37,22 @@ public class DescriptorBenchmark extends RESTRequest{
             input = new FileInputStream(descriptorPath + descriptor);
             byte[] bytes = IOUtils.toByteArray(input);
             
-            while(times >= 1){
-                long startTime = System.currentTimeMillis();
-                HttpURLConnection conn = connect(
-                        new URL("http://localhost:8080/Aree/newconfiguration/post"),
+            //while(times >= 1){
+            //    long startTime = System.currentTimeMillis();
+//                HttpURLConnection conn = connect(
+//                        new URL("http://localhost:8080/Aree/newconfiguration/post"),
+//                        "application/xml",
+//                        bytes, "POST");
+            HttpURLConnection conn = connect(
+                        new URL("http://localhost:8080/"),
                         "application/xml",
-                        bytes, "POST");
-                System.out.println(readAll(new InputStreamReader(conn.getInputStream())));
-                long endTime = System.currentTimeMillis();
-                timings.add(endTime-startTime);
-                times--;
+                        bytes, "GET");
+            conn.getInputStream();
+            //    long endTime = System.currentTimeMillis();
+            //    timings.add(endTime-startTime);
+            //    times--;
                 conn.disconnect();
-            }
+            //}
         } catch (FileNotFoundException ex) {
             Logger.getLogger(DescriptorBenchmark.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MalformedURLException ex) {

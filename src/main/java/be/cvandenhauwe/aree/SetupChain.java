@@ -19,9 +19,9 @@ import java.util.concurrent.Executors;
 
 public class SetupChain {
    
-    private static final int START_THREADS = 50;
-    private static final int STEP_THREADS = 50;
-    private static final int STOP_THREADS = 1000;
+    private static final int START_THREADS = 10;
+    private static final int STEP_THREADS = 10;
+    private static final int STOP_THREADS = 100;
     
     private static final int TIMES = 30;
     private static final int WARMUP = 5;
@@ -66,26 +66,26 @@ public class SetupChain {
         
         
         
-//        FileWriter writer = new FileWriter("/Users/caroline/Desktop/from" + START_THREADS + "to" + STOP_THREADS + "in" + STEP_THREADS + ".csv");
-//        writer.append("threads,time (ms)\n");
-//        
-//        int writercounter = START_THREADS;
-//        for(int j = START_THREADS; j < STOP_THREADS + 1; j += STEP_THREADS){
-//            ArrayList<Long> times2write = alltimings.get(j);
-//            int size = times2write.size();
-//            int skip = WARMUP * j;
-//            for(int i = skip; i < size; i++){
-//                writer.append(String.valueOf(j));
-//                writer.append(',');
-//                writer.append(String.valueOf(times2write.get(i)));
-//                writer.append('\n');
-//            }  
-//        }
-//        
-//          
-//        
-//        writer.flush();
-//	writer.close();
+        FileWriter writer = new FileWriter("/Users/caroline/Desktop/MBASfrom" + START_THREADS + "to" + STOP_THREADS + "in" + STEP_THREADS + ".csv");
+        writer.append("threads,time (ms)\n");
+        
+        int writercounter = START_THREADS;
+        for(int j = START_THREADS; j < STOP_THREADS + 1; j += STEP_THREADS){
+            ArrayList<Long> times2write = alltimings.get(j);
+            int size = times2write.size();
+            int skip = WARMUP * j;
+            for(int i = skip; i < size; i++){
+                writer.append(String.valueOf(j));
+                writer.append(',');
+                writer.append(String.valueOf(times2write.get(i)));
+                writer.append('\n');
+            }  
+        }
+        
+          
+        
+        writer.flush();
+	writer.close();
     }
        
  //   private static void sendXML(){

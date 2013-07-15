@@ -39,19 +39,15 @@ public class DescriptorBenchmark extends RESTRequest{
             
             //while(times >= 1){
             //    long startTime = System.currentTimeMillis();
-//                HttpURLConnection conn = connect(
-//                        new URL("http://localhost:8080/Aree/newconfiguration/post"),
-//                        "application/xml",
-//                        bytes, "POST");
-            HttpURLConnection conn = connect(
-                        new URL("http://localhost:8080/"),
+                HttpURLConnection conn = connect(
+                        new URL("http://localhost:8080/Aree/newconfiguration/post"),
                         "application/xml",
-                        bytes, "GET");
+                        bytes, "POST");
             conn.getInputStream();
             //    long endTime = System.currentTimeMillis();
             //    timings.add(endTime-startTime);
             //    times--;
-                conn.disconnect();
+            conn.disconnect();
             //}
         } catch (FileNotFoundException ex) {
             Logger.getLogger(DescriptorBenchmark.class.getName()).log(Level.SEVERE, null, ex);

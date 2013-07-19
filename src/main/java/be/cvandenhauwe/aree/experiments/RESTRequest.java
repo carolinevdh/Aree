@@ -4,7 +4,7 @@
  */
 package be.cvandenhauwe.aree.experiments;
 
-import be.cvandenhauwe.aree.SetupChain;
+import be.cvandenhauwe.aree.ExperimentTool;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
@@ -36,7 +36,7 @@ public class RESTRequest {
             return conn;
             
         } catch (IOException ex) {
-            Logger.getLogger(SetupChain.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ExperimentTool.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }

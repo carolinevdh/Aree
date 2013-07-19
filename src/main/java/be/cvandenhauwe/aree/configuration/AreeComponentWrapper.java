@@ -60,6 +60,21 @@ public class AreeComponentWrapper {
      * @return success
      */
     public boolean newInstance(AreeContext inj, String pathToComponents) throws Exception{
+//        boolean done;
+//        Long start = System.currentTimeMillis();        
+//        done = loadInstance(pathToComponents);
+//        Long end = System.currentTimeMillis();
+//        
+//        if(!done) done = injectInstance(inj);
+//        
+//        if(done){
+//            AreeArgumentsImpl setupargs = new AreeArgumentsImpl();
+//            setupargs.put("time", end-start);
+//            getInstance().setup(setupargs);
+//            return true;
+//        }
+//        return false;
+        
         if(injectInstance(inj) || loadInstance(pathToComponents)){
             if(hasSetup) getInstance().setup(setupArguments);
             return true;
@@ -71,8 +86,8 @@ public class AreeComponentWrapper {
         return doInjectInstance(inj.getComponents());
     }
     
-    private <T extends AreeComponentInterface> boolean doInjectInstance(Instance<T> instances) {
-        for(T injected : instances){
+    private boolean doInjectInstance(Instance<AreeComponentInterface> instances) {
+        for(AreeComponentInterface injected : instances){
             if(injected.getClass().getCanonicalName().equals(identifier)){
                 setInstance(injected);
                 return true;

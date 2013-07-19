@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Aree Descriptor file -->
+<descriptor>
+	<configuration> 
+		<chain> 
+			<component identifier="be.cvandenhauwe.aree.experiments.ExperimentThreeComponent" hassetup="false" />
+		</chain>
+	</configuration>
+</descriptor>

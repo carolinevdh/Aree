@@ -1,41 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Aree Descriptor file -->
-<!--<descriptor>
-	<configuration action="new">
-		<input>
-			<chain>
-				<link>
-					<class>be.cvandenhauwe.aree.input.PlainInput</class>
-					<arguments/>
-				</link>
-			</chain>
-		</input>	
-		<reasoner>
-			<chain>
-				<link>
-					<class>com.johndoe.areesqlitetools.SQLiteReadOnlyReasoner</class>
-                    <arguments/>			
-				</link>
-			</chain>
-		</reasoner>
-		<output>
-			<chain>
-				<link>
-					<class>be.cvandenhauwe.aree.output.ResultSettoJSONOutput</class>
-                    <arguments/>
-				</link>
-			</chain>
-		</output>		
-	</configuration>
-</descriptor>-->
-
-
-
 <descriptor>
 	<configuration> 
 		<chain> 
 			<component identifier="com.johndoe.areesqlitetools.SQLiteReadOnlyReasoner" hassetup="false" />
-			<component identifier="be.cvandenhauwe.aree.output.ResultSettoJSONOutput" hassetup="false" />
+			<component identifier="be.cvandenhauwe.aree.components.ResultSettoJSONOutput" hassetup="false" />
 		</chain>
 		<chain> 
 			<component identifier="be.cvandenhauwe.aree.input.JSONParser" hassetup="false" />

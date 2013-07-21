@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Aree Descriptor file -->
 <descriptor>
 	<configuration> 
 		<chain> 
-			<component identifier="com.johndoe.areesqlitetools.SQLiteReadOnlyReasoner" hassetup="false" />
-			<component identifier="be.cvandenhauwe.aree.components.ResultSettoJSONOutput" hassetup="false" />
-		</chain>
-		<chain> 
-			<component identifier="be.cvandenhauwe.aree.input.JSONParser" hassetup="false" />
-			<component identifier="com.janedoe.rcsb.pdb" hassetup="false" />
-			<component identifier="be.cvandenhauwe.aree.output.FileServer" hassetup="false" />
+			<component identifier="be.cvandenhauwe.aree.experiments.ExperimentComponent" hassetup="false" />
 		</chain>
 	</configuration>
 </descriptor>

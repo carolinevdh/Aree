@@ -39,30 +39,6 @@
             <version>3.7.2</version>
             <type>jar</type>
         </dependency>
-<!--        <dependency>
-            <groupId>com.johndoe</groupId>
-            <artifactId>AreeSQLiteTools</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <type>jar</type>
-        </dependency>-->
-<!--        <dependency>
-            <groupId>org.xeustechnologies</groupId>
-            <artifactId>jcl-core</artifactId>
-            <version>2.5-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.xeustechnologies</groupId>
-            <artifactId>jcl-spring</artifactId>
-            <version>2.5-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.xeustechnologies</groupId>
-            <artifactId>test-jcl</artifactId>
-            <version>2.5-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>-->
         <dependency>
             <groupId>be.cvandenhauwe</groupId>
             <artifactId>Aree-api</artifactId>
@@ -82,10 +58,25 @@
             <version>1.6.1</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>com.github.stephenc</groupId>
+            <artifactId>jamm</artifactId>
+            <version>0.2.5</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <forkMode>once</forkMode>
+                    <argLine>-javaagent:${project.build.directory}/jamm-0.2.5.jar</argLine>
+                    <workingDirectory>${project.build.directory}</workingDirectory>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -129,20 +120,25 @@
                             </artifactItems>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                        <groupId>com.github.stephenc</groupId>
+                                        <artifactId>jamm</artifactId>
+                                        <version>0.2.5</version>
+                                        <outputDirectory>${project.build.directory}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>                   
                 </executions>
             </plugin>
-<!--            <plugin>
-                <groupId>org.apache.openejb.maven</groupId>
-                <artifactId>jarstxt-maven-plugin</artifactId>
-                <version>4.6.0-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                   </execution>
-                </executions>
-            </plugin>-->
         </plugins>
     </build>
     
@@ -151,12 +147,5 @@
             <id>apache.snapshots</id>
             <url>http://repository.apache.org/snapshots/</url>
         </pluginRepository>
-    </pluginRepositories>
-    <repositories>
-	   <repository>
-		  <id>JBoss repository</id>
-		  <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
-	   </repository>
-	</repositories>
- 
+    </pluginRepositories> 
 </project>

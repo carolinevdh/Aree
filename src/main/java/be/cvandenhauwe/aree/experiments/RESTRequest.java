@@ -4,7 +4,6 @@
  */
 package be.cvandenhauwe.aree.experiments;
 
-import be.cvandenhauwe.aree.ExperimentTool;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;

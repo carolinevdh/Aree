@@ -39,7 +39,7 @@ public class Initiator {
         watchService.initialScan(path);
         watchService.poll(path,60);
         
-        generateConfigurations();
+        //generateConfigurations();
     }
     
     public void generateConfigurations(){
@@ -48,15 +48,15 @@ public class Initiator {
         //build configurations for usage
         int counter = 0;
         while(counter <= 1){
-            //int key = ConfigurationManager.getConfigurationMgr().getUniqueKey();
+            int key = ConfigurationManager.getConfigurationMgr().getUniqueKey();
             int comp = rg.nextInt(100) + 1;
             
             AreeChain chain = new AreeChain();
             chain.add(new AreeComponentWrapper("be.cvandenhauwe.aree.components.ResultSettoJSONOutput"));
             AreeChainCollection chains = new AreeChainCollection();
             chains.add(chain);
-            AreeConfiguration config = new AreeConfiguration(0, chains);    
-            ConfigurationManager.getConfigurationMgr().addNewConfiguration(0, config);
+            AreeConfiguration config = new AreeConfiguration(key, chains);    
+            ConfigurationManager.getConfigurationMgr().addNewConfiguration(key, config);
             counter++;
         }
     }

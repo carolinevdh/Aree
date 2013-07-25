@@ -36,6 +36,12 @@ public class AreeConfiguration {
         return KEY;
     }
     
+    public int size(){
+        int size = 0;
+        for(AreeChain chain : chains) size += chain.size();
+        return size;
+    }
+    
     @Override
     public String toString(){
         StringBuilder str = new StringBuilder();

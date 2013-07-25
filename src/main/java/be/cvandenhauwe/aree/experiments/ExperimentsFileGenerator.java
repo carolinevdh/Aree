@@ -13,12 +13,12 @@ import java.io.IOException;
  */
 public class ExperimentsFileGenerator {
      public static void main(String[] args) throws IOException {
-        generateDescriptors();
+        generateComponents();
     }
      
     public static void generateComponents() throws IOException{
         for(int i = 1; i <= 100; i++){
-            FileWriter writer = new FileWriter("/Users/caroline/Desktop/components/be/cvandenhauwe/aree/experimentcomponents/ExperimentThreeComponent" + i + ".java");
+            FileWriter writer = new FileWriter("/Users/caroline/Desktop/components/ExperimentThreeComponent" + i + ".java");
             writer.append("package be.cvandenhauwe.aree.experimentcomponents;\n");
             writer.append("import be.cvandenhauwe.aree.configuration.AreeArguments;\n");
             writer.append("import be.cvandenhauwe.aree.configuration.AreeComponentInterface;\n");

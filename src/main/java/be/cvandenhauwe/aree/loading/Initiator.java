@@ -39,25 +39,23 @@ public class Initiator {
         watchService.initialScan(path);
         watchService.poll(path,60);
         
-        //generateConfigurations();
+        generateConfigurations();
     }
     
     public void generateConfigurations(){
-        Random rg = new Random();
-        
-        //build configurations for usage
-        int counter = 0;
-        while(counter <= 1){
-            int key = ConfigurationManager.getConfigurationMgr().getUniqueKey();
-            int comp = rg.nextInt(100) + 1;
+        for(int i = 5; i <= 100; i+= 5){   
+            for(int j = 0; j < 35; j++){
+                int key = ConfigurationManager.getConfigurationMgr().getUniqueKey();
             
-            AreeChain chain = new AreeChain();
-            chain.add(new AreeComponentWrapper("be.cvandenhauwe.aree.components.ResultSettoJSONOutput"));
-            AreeChainCollection chains = new AreeChainCollection();
-            chains.add(chain);
-            AreeConfiguration config = new AreeConfiguration(key, chains);    
-            ConfigurationManager.getConfigurationMgr().addNewConfiguration(key, config);
-            counter++;
+                AreeChain chain = new AreeChain();
+                for(int k = 1; k <= i; k++){
+                    chain.add(new AreeComponentWrapper("be.cvandenhauwe.aree.experimentcomponents.ExperimentThreeComponent" + k));
+                }
+                AreeChainCollection chains = new AreeChainCollection();
+                chains.add(chain);
+                AreeConfiguration config = new AreeConfiguration(key, chains);    
+                ConfigurationManager.getConfigurationMgr().addNewConfiguration(key, config);
+            }            
         }
     }
 }

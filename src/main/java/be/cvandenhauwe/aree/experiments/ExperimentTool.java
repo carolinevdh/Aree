@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
+import org.github.jamm.MemoryMeter;
 
 /**
  *
@@ -32,7 +33,8 @@ public class ExperimentTool {
     
     public static void main(String[] args) throws InterruptedException, IOException {
         //simultaneousThreadsExperiment(10, 100, 10, 5, 30); 
-        steppingExperiment(10, 10, 10, 0, 1);
+        steppingExperiment(5, 100, 5, 5, 30);
+        
     }
     
     private static void simultaneousThreadsExperiment(  final int startthreads, final int stopthreads, final int stepthreads,
@@ -81,14 +83,17 @@ public class ExperimentTool {
     private static void steppingExperiment(final int start, final int stop, final int step, final int warmup, final int times) throws InterruptedException, IOException{
         final HashMap<Integer,ArrayList> alltimings = new HashMap();
        
+        final Stack stack = new Stack();
+        for(int i = 20000; i >= 0; i--) stack.add(i);
+        
         int amount = start;        
         while(amount <= stop){ //varieer aantal uit te voeren threads
             System.out.println("==== GOING FOR " + amount + " units. ====");
             final ArrayList<String> timings = new ArrayList();
             int counter = 0;
             while(counter < (times + warmup)){
-                System.out.println("=> " + amount + "thr, #" + (counter + 1));
-                runExperimentFour(timings, amount);
+                System.out.print("=> " + amount + " components, #" + (counter + 1) + ": ");
+                runExperimentFourB(timings, amount, stack.pop().toString());
                 Thread.sleep(1000);
                 counter++;
             }
@@ -97,7 +102,7 @@ public class ExperimentTool {
             Thread.sleep(1000);
         }
         
-        write("/Users/caroline/Desktop/exp4","threads, memory usage (bytes)",
+        write("/Users/caroline/Desktop/exp4/exp4b","size, memory usage (bytes), memory usage (bytes)",
                 alltimings, start, stop, step, warmup);
     }
       
@@ -186,7 +191,7 @@ public class ExperimentTool {
         }
     }            
             
-    private static void runExperimentFour(ArrayList<String> timings, int components){
+    private static void runExperimentFourA(ArrayList<String> timings, int components){
     
         FileInputStream input;
         try {        
@@ -210,6 +215,33 @@ public class ExperimentTool {
         } catch (IOException ex) {
             Logger.getLogger(ExperimentTool.class.getName()).log(Level.SEVERE, null, ex);
         }    
+    }
+    
+    private static void runExperimentFourB(ArrayList<String> timings, int components, String key){
+        try {        
+            JSONObject json = new JSONObject();
+            json.accumulate("key",key);
+            json.accumulate("data", "");
+            String request = json.toString();                       
+
+            HttpURLConnection connrequest = connect(
+                    new URL("http://localhost:8080/Aree/expfourb/post"),
+                    "application/json",
+                    IOUtils.toByteArray(request), "POST");
+            
+            
+            String output = RESTRequest.readAll(new InputStreamReader(connrequest.getInputStream()));
+            System.out.println(output);
+            timings.add(output);
+            connrequest.disconnect();
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ExperimentTool.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(ExperimentTool.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ExperimentTool.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private static void write(String path, String header, HashMap<Integer, ArrayList> data, int start, int stop, int step, int drop) throws IOException{

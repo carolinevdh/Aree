@@ -59,24 +59,21 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>net.sourceforge.sizeof</groupId>
+            <artifactId>sizeof</artifactId>
+            <version>0.2.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>com.github.stephenc</groupId>
             <artifactId>jamm</artifactId>
             <version>0.2.5</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <forkMode>once</forkMode>
-                    <argLine>-javaagent:${project.build.directory}/jamm-0.2.5.jar</argLine>
-                    <workingDirectory>${project.build.directory}</workingDirectory>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -120,23 +117,6 @@
                             </artifactItems>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>copy</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                        <groupId>com.github.stephenc</groupId>
-                                        <artifactId>jamm</artifactId>
-                                        <version>0.2.5</version>
-                                        <outputDirectory>${project.build.directory}</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>                   
                 </executions>
             </plugin>
         </plugins>
